@@ -29,6 +29,16 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 
 import {
   createTradingTools,
+  createMarketSearchTools,
+  createEquityTools,
+  createAnalysisTools,
+  createNewsArchiveTools,
+  createEconomyTools,
+  createIndexTools,
+  createDerivativesTools,
+  createEtfTools,
+  createSectorRotationTools,
+  createReferenceBoardTools,
   UTAManagerSDK,
 } from '@openalice-trading/trading-tools'
 import { createUTAClient } from '@traderalice/uta-protocol'
@@ -36,6 +46,25 @@ import {
   extractMcpShape,
   wrapToolExecute,
 } from '@openalice-trading/alice-core/core/mcp-export.js'
+import { loadConfig } from '@openalice-trading/alice-core/core/config.js'
+import {
+  getSDKExecutor,
+  buildRouteMap,
+  SDKEquityClient,
+  SDKCryptoClient,
+  SDKCurrencyClient,
+  SDKCommodityClient,
+  SDKEtfClient,
+  SDKIndexClient,
+  SDKDerivativesClient,
+  SDKEconomyClient,
+} from '@openalice-trading/alice-core/domain/market-data/client/typebb/index.js'
+import { buildSDKCredentials } from '@openalice-trading/alice-core/domain/market-data/credential-map.js'
+import { SymbolIndex } from '@openalice-trading/alice-core/domain/market-data/equity/symbol-index.js'
+import { CommodityCatalog } from '@openalice-trading/alice-core/domain/market-data/commodity/commodity-catalog.js'
+import { createReferenceData } from '@openalice-trading/alice-core/domain/market-data/reference/service.js'
+import { createBarService } from '@openalice-trading/alice-core/domain/market-data/bars/index.js'
+import { NewsCollectorStore } from '@openalice-trading/alice-core/domain/news/store.js'
 
 // ==================== Config ====================
 
@@ -138,14 +167,31 @@ async function waitForUtaHealth(): Promise<void> {
 
 // ==================== MCP server ====================
 
-function buildMcpServer(manager: UTAManagerSDK): McpServer {
+function buildMcpServer(
+  manager: UTAManagerSDK,
+  marketDeps: {
+    equityClient: any
+    cryptoClient: any
+    currencyClient: any
+    commodityClient: any
+    etfClient: any
+    indexClient: any
+    derivativesClient: any
+    economyClient: any
+    marketSearch: any
+    barService: any
+    reference: any
+    newsStore: NewsCollectorStore | null
+  }
+): McpServer {
   const server = new McpServer({
     name: 'openalice-trading',
     version: '0.1.0',
   })
 
-  const tools = createTradingTools(manager)
-  for (const [name, tool] of Object.entries(tools)) {
+  // Trading tools
+  const tradingTools = createTradingTools(manager)
+  for (const [name, tool] of Object.entries(tradingTools)) {
     if (!tool.execute) continue
     const description = typeof tool.description === 'string' ? tool.description : name
     server.registerTool(
@@ -157,7 +203,151 @@ function buildMcpServer(manager: UTAManagerSDK): McpServer {
       wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
     )
   }
-  console.log(`[mcp] registered ${Object.keys(tools).length} trading tools`)
+  console.log(`[mcp] registered ${Object.keys(tradingTools).length} trading tools`)
+
+  // Market data tools
+  const marketSearchTools = createMarketSearchTools(marketDeps.marketSearch)
+  for (const [name, tool] of Object.entries(marketSearchTools)) {
+    if (!tool.execute) continue
+    const description = typeof tool.description === 'string' ? tool.description : name
+    server.registerTool(
+      name,
+      {
+        description,
+        inputSchema: extractMcpShape(tool),
+      },
+      wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+    )
+  }
+  console.log(`[mcp] registered ${Object.keys(marketSearchTools).length} market-search tools`)
+
+  const equityTools = createEquityTools(marketDeps.equityClient)
+  for (const [name, tool] of Object.entries(equityTools)) {
+    if (!tool.execute) continue
+    const description = typeof tool.description === 'string' ? tool.description : name
+    server.registerTool(
+      name,
+      {
+        description,
+        inputSchema: extractMcpShape(tool),
+      },
+      wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+    )
+  }
+  console.log(`[mcp] registered ${Object.keys(equityTools).length} equity tools`)
+
+  if (marketDeps.etfClient) {
+    const etfTools = createEtfTools(marketDeps.etfClient)
+    for (const [name, tool] of Object.entries(etfTools)) {
+      if (!tool.execute) continue
+      const description = typeof tool.description === 'string' ? tool.description : name
+      server.registerTool(
+        name,
+        {
+          description,
+          inputSchema: extractMcpShape(tool),
+        },
+        wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+      )
+    }
+    console.log(`[mcp] registered ${Object.keys(etfTools).length} etf tools`)
+  }
+
+  if (marketDeps.newsStore) {
+    const newsTools = createNewsArchiveTools(marketDeps.newsStore)
+    for (const [name, tool] of Object.entries(newsTools)) {
+      if (!tool.execute) continue
+      const description = typeof tool.description === 'string' ? tool.description : name
+      server.registerTool(
+        name,
+        {
+          description,
+          inputSchema: extractMcpShape(tool),
+        },
+        wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+      )
+    }
+    console.log(`[mcp] registered ${Object.keys(newsTools).length} news tools`)
+  }
+
+  const sectorRotationTools = createSectorRotationTools(marketDeps.equityClient)
+  for (const [name, tool] of Object.entries(sectorRotationTools)) {
+    if (!tool.execute) continue
+    const description = typeof tool.description === 'string' ? tool.description : name
+    server.registerTool(
+      name,
+      {
+        description,
+        inputSchema: extractMcpShape(tool),
+      },
+      wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+    )
+  }
+  console.log(`[mcp] registered ${Object.keys(sectorRotationTools).length} sector-rotation tools`)
+
+  if (marketDeps.derivativesClient) {
+    const derivativesTools = createDerivativesTools(marketDeps.derivativesClient)
+    for (const [name, tool] of Object.entries(derivativesTools)) {
+      if (!tool.execute) continue
+      const description = typeof tool.description === 'string' ? tool.description : name
+      server.registerTool(
+        name,
+        {
+          description,
+          inputSchema: extractMcpShape(tool),
+        },
+        wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+      )
+    }
+    console.log(`[mcp] registered ${Object.keys(derivativesTools).length} derivatives tools`)
+  }
+
+  if (marketDeps.indexClient) {
+    const indexTools = createIndexTools(marketDeps.indexClient)
+    for (const [name, tool] of Object.entries(indexTools)) {
+      if (!tool.execute) continue
+      const description = typeof tool.description === 'string' ? tool.description : name
+      server.registerTool(
+        name,
+        {
+          description,
+          inputSchema: extractMcpShape(tool),
+        },
+        wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+      )
+    }
+    console.log(`[mcp] registered ${Object.keys(indexTools).length} index tools`)
+  }
+
+  const economyTools = createEconomyTools(marketDeps.economyClient, marketDeps.commodityClient)
+  for (const [name, tool] of Object.entries(economyTools)) {
+    if (!tool.execute) continue
+    const description = typeof tool.description === 'string' ? tool.description : name
+    server.registerTool(
+      name,
+      {
+        description,
+        inputSchema: extractMcpShape(tool),
+      },
+      wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+    )
+  }
+  console.log(`[mcp] registered ${Object.keys(economyTools).length} economy tools`)
+
+  const referenceBoardTools = createReferenceBoardTools(marketDeps.reference)
+  for (const [name, tool] of Object.entries(referenceBoardTools)) {
+    if (!tool.execute) continue
+    const description = typeof tool.description === 'string' ? tool.description : name
+    server.registerTool(
+      name,
+      {
+        description,
+        inputSchema: extractMcpShape(tool),
+      },
+      wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+    )
+  }
+  console.log(`[mcp] registered ${Object.keys(referenceBoardTools).length} reference-board tools`)
 
   return server
 }
@@ -197,8 +387,75 @@ async function main(): Promise<void> {
   const client = createUTAClient({ baseUrl: UTA_URL })
   const manager = new UTAManagerSDK({ client })
 
-  // 4. MCP server with trading tools
-  const mcp = buildMcpServer(manager)
+  // 4. Load config and initialize market data clients
+  const config = await loadConfig()
+  const { providers } = config.marketData
+
+  const executor = getSDKExecutor()
+  const routeMap = buildRouteMap()
+  const credentials = buildSDKCredentials(config.marketData.providerKeys)
+
+  const equityClient = new SDKEquityClient(executor, 'equity', providers.equity, credentials, routeMap)
+  const cryptoClient = new SDKCryptoClient(executor, 'crypto', providers.crypto, credentials, routeMap)
+  const currencyClient = new SDKCurrencyClient(executor, 'currency', providers.currency, credentials, routeMap)
+  const commodityClient = new SDKCommodityClient(executor, 'commodity', providers.commodity, credentials, routeMap)
+  const etfClient = new SDKEtfClient(executor, 'etf', providers.equity, credentials, routeMap)
+  const indexClient = new SDKIndexClient(executor, 'index', providers.equity, credentials, routeMap)
+  const derivativesClient = new SDKDerivativesClient(executor, 'derivatives', providers.equity, credentials, routeMap)
+  const economyClient = new SDKEconomyClient(executor, 'economy', 'federal_reserve', credentials, routeMap)
+
+  // 5. Initialize market data dependencies
+  const symbolIndex = new SymbolIndex()
+  await symbolIndex.load(equityClient)
+
+  const commodityCatalog = new CommodityCatalog()
+  commodityCatalog.load()
+
+  const marketSearch = { symbolIndex, cryptoClient, currencyClient, commodityCatalog }
+
+  const barService = createBarService({
+    marketSearch,
+    equityClient,
+    cryptoClient,
+    currencyClient,
+    commodityClient,
+    utaManager: manager,
+    vendorProviders: config.marketData.providers,
+  })
+
+  const reference = createReferenceData({
+    equityClient,
+    economyClient,
+    derivativesClient,
+    indexClient,
+    equityProvider: config.marketData.providers.equity,
+    hub: config.marketData.hub,
+  })
+
+  let newsStore: NewsCollectorStore | null = null
+  if (config.news.enabled) {
+    newsStore = new NewsCollectorStore({
+      maxInMemory: config.news.maxInMemory,
+      retentionDays: config.news.retentionDays,
+    })
+    await newsStore.init()
+  }
+
+  // 6. MCP server with all tools
+  const mcp = buildMcpServer(manager, {
+    equityClient,
+    cryptoClient,
+    currencyClient,
+    commodityClient,
+    etfClient,
+    indexClient,
+    derivativesClient,
+    economyClient,
+    marketSearch,
+    barService,
+    reference,
+    newsStore,
+  })
 
   // 5. Streamable HTTP — stateful sessions, one transport per session id.
   // Stateless mode (sessionIdGenerator: undefined) is unsafe to reuse a

@@ -1,0 +1,198 @@
+/**
+ * FMP Balance Sheet Model.
+ * Maps to: openbb_fmp/models/balance_sheet.py
+ */
+import { z } from 'zod';
+import { Fetcher } from '../../../core/provider/abstract/fetcher.js';
+export declare const FMPBalanceSheetQueryParamsSchema: z.ZodObject<{
+    symbol: z.ZodEffects<z.ZodString, string, string>;
+    limit: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+} & {
+    period: z.ZodDefault<z.ZodEnum<["q1", "q2", "q3", "q4", "fy", "ttm", "annual", "quarter"]>>;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    symbol: z.ZodEffects<z.ZodString, string, string>;
+    limit: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+} & {
+    period: z.ZodDefault<z.ZodEnum<["q1", "q2", "q3", "q4", "fy", "ttm", "annual", "quarter"]>>;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    symbol: z.ZodEffects<z.ZodString, string, string>;
+    limit: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+} & {
+    period: z.ZodDefault<z.ZodEnum<["q1", "q2", "q3", "q4", "fy", "ttm", "annual", "quarter"]>>;
+}, z.ZodTypeAny, "passthrough">>;
+export type FMPBalanceSheetQueryParams = z.infer<typeof FMPBalanceSheetQueryParamsSchema>;
+export declare const FMPBalanceSheetDataSchema: z.ZodObject<{
+    period_ending: z.ZodString;
+    fiscal_period: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    fiscal_year: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+} & {
+    filing_date: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    accepted_date: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    cik: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    symbol: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    reported_currency: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    cash_and_cash_equivalents: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    short_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    cash_and_short_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    net_receivables: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    inventory: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    plant_property_equipment_net: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    goodwill: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    intangible_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    goodwill_and_intangible_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    long_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    tax_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_non_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    non_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    accounts_payable: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    prepaid_expenses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    short_term_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    tax_payables: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    current_deferred_revenue: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    long_term_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    deferred_revenue_non_current: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    deferred_tax_liabilities_non_current: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_non_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_non_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    capital_lease_obligations: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    preferred_stock: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    common_stock: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    retained_earnings: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    accumulated_other_comprehensive_income: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_total_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_common_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_equity_non_controlling_interests: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities_and_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    minority_interest: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities_and_total_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    net_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    period_ending: z.ZodString;
+    fiscal_period: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    fiscal_year: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+} & {
+    filing_date: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    accepted_date: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    cik: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    symbol: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    reported_currency: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    cash_and_cash_equivalents: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    short_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    cash_and_short_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    net_receivables: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    inventory: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    plant_property_equipment_net: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    goodwill: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    intangible_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    goodwill_and_intangible_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    long_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    tax_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_non_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    non_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    accounts_payable: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    prepaid_expenses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    short_term_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    tax_payables: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    current_deferred_revenue: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    long_term_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    deferred_revenue_non_current: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    deferred_tax_liabilities_non_current: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_non_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_non_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    capital_lease_obligations: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    preferred_stock: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    common_stock: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    retained_earnings: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    accumulated_other_comprehensive_income: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_total_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_common_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_equity_non_controlling_interests: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities_and_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    minority_interest: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities_and_total_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    net_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    period_ending: z.ZodString;
+    fiscal_period: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    fiscal_year: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+} & {
+    filing_date: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    accepted_date: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    cik: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    symbol: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    reported_currency: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    cash_and_cash_equivalents: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    short_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    cash_and_short_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    net_receivables: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    inventory: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    plant_property_equipment_net: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    goodwill: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    intangible_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    goodwill_and_intangible_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    long_term_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    tax_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_non_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    non_current_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_assets: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    accounts_payable: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    prepaid_expenses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    short_term_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    tax_payables: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    current_deferred_revenue: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    long_term_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    deferred_revenue_non_current: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    deferred_tax_liabilities_non_current: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_non_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_non_current_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    capital_lease_obligations: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    preferred_stock: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    common_stock: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    retained_earnings: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    accumulated_other_comprehensive_income: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    other_total_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_common_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_equity_non_controlling_interests: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities_and_shareholders_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    minority_interest: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_liabilities_and_total_equity: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_investments: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    total_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    net_debt: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+}, z.ZodTypeAny, "passthrough">>;
+export type FMPBalanceSheetData = z.infer<typeof FMPBalanceSheetDataSchema>;
+export declare class FMPBalanceSheetFetcher extends Fetcher {
+    static transformQuery(params: Record<string, unknown>): FMPBalanceSheetQueryParams;
+    static extractData(query: FMPBalanceSheetQueryParams, credentials: Record<string, string> | null): Promise<Record<string, unknown>[]>;
+    static transformData(query: FMPBalanceSheetQueryParams, data: Record<string, unknown>[]): FMPBalanceSheetData[];
+}

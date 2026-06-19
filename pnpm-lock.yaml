@@ -193,6 +193,9 @@ importers:
       '@traderalice/ibkr':
         specifier: workspace:*
         version: link:../ibkr
+      '@traderalice/opentypebb':
+        specifier: workspace:*
+        version: link:../opentypebb
       '@traderalice/uta-protocol':
         specifier: workspace:*
         version: link:../uta-protocol

@@ -158,6 +158,41 @@ The script drives `placeOrder → commit → tradingPush → portfolio →
 closePosition → push → reject` against the in-memory mock broker and prints
 each tool call's result.
 
+## Production Deployment (systemd)
+
+For production use, set up a systemd service to manage the MCP server:
+
+```bash
+# Copy the service file
+cp trading-mcp.service ~/.config/systemd/user/
+
+# Reload systemd and enable the service
+systemctl --user daemon-reload
+systemctl --user enable trading-mcp
+
+# Start the service
+systemctl --user start trading-mcp
+
+# Check status
+systemctl --user status trading-mcp
+
+# View logs
+journalctl --user -u trading-mcp -f
+```
+
+The service file is configured to:
+- Start automatically on boot
+- Restart on failure (with 10s delay)
+- Run as your user (not root)
+- Use `/tmp/openclaw-test` as the data directory
+- Listen on port 47400
+
+To stop or disable:
+```bash
+systemctl --user stop trading-mcp
+systemctl --user disable trading-mcp
+```
+
 ## What's NOT in this repo
 
 - No Web UI / Dashboard. (Skill replaces the approval gate.)

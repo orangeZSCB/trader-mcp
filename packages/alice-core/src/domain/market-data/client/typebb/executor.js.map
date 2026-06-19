@@ -1,0 +1,1 @@
+{"version":3,"file":"executor.js","sourceRoot":"","sources":["executor.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,OAAO,EAAE,cAAc,EAAsB,MAAM,yBAAyB,CAAA;AAE5E,IAAI,SAAS,GAAyB,IAAI,CAAA;AAE1C,MAAM,UAAU,cAAc;IAC5B,IAAI,CAAC,SAAS;QAAE,SAAS,GAAG,cAAc,EAAE,CAAA;IAC5C,OAAO,SAAS,CAAA;AAClB,CAAC"}

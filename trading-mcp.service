@@ -1,0 +1,32 @@
+[Unit]
+Description=OpenAlice Trading MCP Server
+Documentation=https://github.com/yourusername/openalice-trading-mcp
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=orange
+Group=orange
+WorkingDirectory=/home/orange/proj/openalice-trading-mcp/apps/mcp-server
+Environment=OPENALICE_HOME=/tmp/openclaw-test
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node --conditions=openalice-source --import tsx src/main.ts
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=trading-mcp
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/tmp/openclaw-test
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,27 @@
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { Contract } from "./Contract.js";
+export declare const protobufPackage = "protobuf";
+export interface PortfolioValue {
+    contract?: Contract | undefined;
+    position?: string | undefined;
+    marketPrice?: number | undefined;
+    marketValue?: number | undefined;
+    averageCost?: number | undefined;
+    unrealizedPNL?: number | undefined;
+    realizedPNL?: number | undefined;
+    accountName?: string | undefined;
+}
+export declare const PortfolioValue: MessageFns<PortfolioValue>;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+export type DeepPartial<T> = T extends Builtin ? T : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>> : T extends {} ? {
+    [K in keyof T]?: DeepPartial<T[K]>;
+} : Partial<T>;
+export interface MessageFns<T> {
+    encode(message: T, writer?: BinaryWriter): BinaryWriter;
+    decode(input: BinaryReader | Uint8Array, length?: number): T;
+    fromJSON(object: any): T;
+    toJSON(message: T): unknown;
+    create(base?: DeepPartial<T>): T;
+    fromPartial(object: DeepPartial<T>): T;
+}
+export {};

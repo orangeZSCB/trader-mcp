@@ -10,13 +10,16 @@
       "default": "./src/index.ts"
     }
   },
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@openalice-trading/alice-core": "workspace:*",
     "@traderalice/ibkr": "workspace:*",
+    "@traderalice/opentypebb": "workspace:*",
     "@traderalice/uta-protocol": "workspace:*",
     "ai": "^6.0.86",
     "decimal.js": "^10.6.0",
@@ -26,5 +29,7 @@
     "@types/node": "^25.2.3",
     "typescript": "^5.9.3"
   },
-  "engines": { "node": ">=20.0.0" }
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }
