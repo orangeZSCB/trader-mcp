@@ -1,0 +1,11 @@
+packages:
+  - 'packages/*'
+  - 'services/*'
+  - 'apps/*'
+
+onlyBuiltDependencies:
+  - node-pty
+  - longbridge
+  - bufferutil
+  - protobufjs
+  - esbuild

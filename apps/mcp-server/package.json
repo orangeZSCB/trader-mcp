@@ -1,0 +1,29 @@
+{
+  "name": "@openalice-trading/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server exposing OpenAlice trading tools over Streamable HTTP. Spawns and supervises a UTA child process.",
+  "private": true,
+  "type": "module",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "node --conditions=openalice-source --import tsx --watch src/main.ts",
+    "start": "node --conditions=openalice-source --import tsx src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@openalice-trading/alice-core": "workspace:*",
+    "@openalice-trading/trading-tools": "workspace:*",
+    "@traderalice/uta-protocol": "workspace:*",
+    "@traderalice/uta-service": "workspace:*",
+    "hono": "^4.12.21",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": { "node": ">=20.0.0" }
+}

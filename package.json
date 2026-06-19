@@ -1,0 +1,39 @@
+{
+  "name": "openalice-trading-mcp",
+  "version": "0.1.0",
+  "description": "Standalone MCP server exposing OpenAlice's Trade-as-Git trading workflow.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx apps/mcp-server/src/main.ts",
+    "build": "pnpm -r --filter='./packages/*' --filter='./services/*' run build && tsup apps/mcp-server/src/main.ts --format esm --dts",
+    "start": "node dist/main.js",
+    "typecheck": "tsc -b",
+    "test": "vitest run"
+  },
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@10.29.2",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@traderalice/uta-protocol": "workspace:*",
+    "@openalice-trading/alice-core": "workspace:*",
+    "@traderalice/uta-service": "workspace:*",
+    "ai": "^6.0.86",
+    "decimal.js": "^10.6.0",
+    "hono": "^4.12.21",
+    "@hono/node-server": "^2.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "node-pty"
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "@openalice-trading/alice-core",
+  "version": "0.1.0",
+  "description": "Minimal subset of OpenAlice's src/core + market-data needed by UTA service.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./core/*.js": {
+      "types": "./src/core/*.ts",
+      "default": "./src/core/*.ts"
+    },
+    "./domain/*.js": {
+      "types": "./src/domain/*.ts",
+      "default": "./src/domain/*.ts"
+    },
+    "./migrations/*.js": {
+      "types": "./src/migrations/*.ts",
+      "default": "./src/migrations/*.ts"
+    }
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "0.34.48",
+    "@traderalice/ibkr": "workspace:*",
+    "@traderalice/opentypebb": "workspace:*",
+    "@traderalice/uta-protocol": "workspace:*",
+    "ai": "^6.0.86",
+    "ajv": "^8.18.0",
+    "decimal.js": "^10.6.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "typescript": "^5.9.3"
+  },
+  "engines": { "node": ">=20.0.0" }
+}
