@@ -24,7 +24,7 @@ import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { createTradingTools, createMarketSearchTools, createEquityTools, createNewsArchiveTools, createEconomyTools, createIndexTools, createDerivativesTools, createEtfTools, createSectorRotationTools, createReferenceBoardTools, UTAManagerSDK, } from '@openalice-trading/trading-tools';
+import { createTradingTools, createMarketSearchTools, createEquityTools, createNewsArchiveTools, createEconomyTools, createIndexTools, createDerivativesTools, createEtfTools, createSectorRotationTools, createReferenceBoardTools, createAccountManagementTools, UTAManagerSDK, } from '@openalice-trading/trading-tools';
 import { createUTAClient } from '@traderalice/uta-protocol';
 import { extractMcpShape, wrapToolExecute, } from '@openalice-trading/alice-core/core/mcp-export.js';
 import { loadConfig } from '@openalice-trading/alice-core/core/config.js';
@@ -241,6 +241,18 @@ function buildMcpServer(manager, marketDeps) {
         }, wrapToolExecute(tool));
     }
     console.log(`[mcp] registered ${Object.keys(referenceBoardTools).length} reference-board tools`);
+    // Account management tools
+    const accountManagementTools = createAccountManagementTools();
+    for (const [name, tool] of Object.entries(accountManagementTools)) {
+        if (!tool.execute)
+            continue;
+        const description = typeof tool.description === 'string' ? tool.description : name;
+        server.registerTool(name, {
+            description,
+            inputSchema: extractMcpShape(tool),
+        }, wrapToolExecute(tool));
+    }
+    console.log(`[mcp] registered ${Object.keys(accountManagementTools).length} account-management tools`);
     return server;
 }
 // ==================== Main ====================

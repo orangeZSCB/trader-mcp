@@ -39,6 +39,7 @@ import {
   createEtfTools,
   createSectorRotationTools,
   createReferenceBoardTools,
+  createAccountManagementTools,
   UTAManagerSDK,
 } from '@openalice-trading/trading-tools'
 import { createUTAClient } from '@traderalice/uta-protocol'
@@ -348,6 +349,22 @@ function buildMcpServer(
     )
   }
   console.log(`[mcp] registered ${Object.keys(referenceBoardTools).length} reference-board tools`)
+
+  // Account management tools
+  const accountManagementTools = createAccountManagementTools()
+  for (const [name, tool] of Object.entries(accountManagementTools)) {
+    if (!tool.execute) continue
+    const description = typeof tool.description === 'string' ? tool.description : name
+    server.registerTool(
+      name,
+      {
+        description,
+        inputSchema: extractMcpShape(tool),
+      },
+      wrapToolExecute(tool) as Parameters<typeof server.registerTool>[2],
+    )
+  }
+  console.log(`[mcp] registered ${Object.keys(accountManagementTools).length} account-management tools`)
 
   return server
 }

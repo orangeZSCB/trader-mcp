@@ -26,4 +26,6 @@ export { createDerivativesTools } from './derivatives.js';
 export { createEtfTools } from './etf.js';
 export { createSectorRotationTools } from './sector-rotation.js';
 export { createReferenceBoardTools } from './reference-board.js';
+// Account management tools
+export { createAccountManagementTools } from './account-management.js';
 //# sourceMappingURL=index.js.map
