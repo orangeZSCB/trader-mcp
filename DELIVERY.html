@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trader MCP — AI 驱动的智能交易系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-elevated: #242424;
+            --gold: #d4af37;
+            --gold-light: #f4d03f;
+            --amber: #f4a261;
+            --text-primary: #f5f5f5;
+            --text-secondary: #b0b0b0;
+            --text-muted: #707070;
+            --border: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* 背景纹理 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(244, 162, 97, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero 区域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .hero-label {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.75rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.2s forwards;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+        }
+
+        .hero h1 .accent {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .hero-description {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 60px;
+            font-weight: 400;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 80px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.8s forwards;
+        }
+
+        .stat-item {
+            border-left: 2px solid var(--gold);
+            padding-left: 20px;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* 章节 */
+        section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-label {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.75rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 60px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        h2 .accent {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 60px 0 30px 0;
+            color: var(--text-primary);
+        }
+
+        p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+
+        /* 特性网格 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 50px 40px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover {
+            background: var(--bg-elevated);
+            transform: translateY(-8px);
+            border-color: var(--gold);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .feature-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        /* 工作流展示 */
+        .workflow {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 80px;
+            margin: 60px 0;
+            position: relative;
+        }
+
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .workflow-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), var(--amber));
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .workflow-step {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            flex: 1;
+        }
+
+        .workflow-step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-dark);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            transition: all 0.3s;
+        }
+
+        .workflow-step:hover .workflow-step-number {
+            background: var(--gold);
+            color: var(--bg-dark);
+            transform: scale(1.1);
+        }
+
+        .workflow-step-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .workflow-step-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        /* 工具展示 */
+        .tools-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 40px 0;
+        }
+
+        .tool-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+            color: var(--gold);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .tool-badge:hover {
+            background: var(--bg-elevated);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* 代码块 */
+        .code-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--gold);
+            padding: 30px 40px;
+            margin: 40px 0;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            overflow-x: auto;
+        }
+
+        .code-comment {
+            color: var(--text-muted);
+        }
+
+        .code-command {
+            color: var(--gold);
+        }
+
+        .code-string {
+            color: var(--amber);
+        }
+
+        /* 分隔线 */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 80px 0;
+        }
+
+        /* 页脚 */
+        footer {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        footer p {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--gold-light);
+        }
+
+        /* 动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 30px;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+
+            .workflow {
+                padding: 40px 30px;
+            }
+
+            .workflow-steps {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .workflow-steps::before {
+                width: 2px;
+                height: 100%;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tools-showcase {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-label">AI-Powered Trading System</div>
+            <h1>
+                让 AI 成为你的<br>
+                <span class="accent">量化交易</span>助手
+            </h1>
+            <p class="hero-description">
+                Trader MCP 通过 Trade-as-Git 工作流，为 OpenClaw 提供 67 个交易和市场数据工具。
+                安全、透明、可审计的智能交易系统。
+            </p>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">67</div>
+                    <div class="stat-label">交易工具</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">AES-256</div>
+                    <div class="stat-label">加密存储</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">交易所支持</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">审计追踪</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心理念 -->
+        <section>
+            <div class="section-label">Core Philosophy</div>
+            <h2>
+                Trade-as-<span class="accent">Git</span><br>
+                每一笔交易都可追溯
+            </h2>
+            <p>
+                所有交易操作都遵循 Git 工作流：stage → commit → push。
+                推送到交易所需要用户明确授权，杜绝误操作。每一步都可追溯、可审计、可回滚。
+            </p>
+
+            <div class="workflow">
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="workflow-step-number">1</div>
+                        <div class="workflow-step-title">Stage</div>
+                        <div class="workflow-step-desc">暂存交易意图<br>不影响真实账户</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step-number">2</div>
+                        <div class="workflow-step-title">Commit</div>
+                        <div class="workflow-step-desc">生成 commit hash<br>记录决策过程</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step-number">3</div>
+                        <div class="workflow-step-title">Push</div>
+                        <div class="workflow-step-desc">用户授权后执行<br>发送到交易所</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- 核心功能 -->
+        <section>
+            <div class="section-label">Features</div>
+            <h2>
+                为 AI 交易<br>
+                <span class="accent">精心设计</span>
+            </h2>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🔒</span>
+                    <h4>安全机制</h4>
+                    <p>所有交易操作都经过 stage → commit → push 流程，push 到交易所需要用户明确授权，杜绝误操作。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h4>67 个工具</h4>
+                    <p>涵盖账户管理、交易操作、市场数据、经济指标等完整交易流程，满足各种交易需求。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🤖</span>
+                    <h4>AI 智能决策</h4>
+                    <p>OpenClaw 可以根据市场情况和策略自动执行交易，支持网格交易、RSI 过滤等策略。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📈</span>
+                    <h4>多交易所支持</h4>
+                    <p>支持 Binance、OKX、Bybit、Alpaca 等主流交易所，统一接口管理。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📝</span>
+                    <h4>完整审计日志</h4>
+                    <p>每笔交易都有完整的 commit 记录，可随时查看交易历史和决策过程。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h4>实时行情</h4>
+                    <p>实时获取市场价格、持仓、订单状态，确保决策基于最新数据。</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- 工具展示 -->
+        <section>
+            <div class="section-label">Tool Surface</div>
+            <h2>
+                <span class="accent">67</span> 个工具<br>
+                覆盖完整交易流程
+            </h2>
+
+            <h3>账户管理</h3>
+            <div class="tools-showcase">
+                <div class="tool-badge">listAccounts</div>
+                <div class="tool-badge">addAccount</div>
+                <div class="tool-badge">removeAccount</div>
+            </div>
+
+            <h3>交易操作</h3>
+            <div class="tools-showcase">
+                <div class="tool-badge">placeOrder</div>
+                <div class="tool-badge">modifyOrder</div>
+                <div class="tool-badge">cancelOrder</div>
+                <div class="tool-badge">closePosition</div>
+                <div class="tool-badge">tradingCommit</div>
+                <div class="tool-badge">tradingPush</div>
+                <div class="tool-badge">tradingReject</div>
+            </div>
+
+            <h3>查询工具</h3>
+            <div class="tools-showcase">
+                <div class="tool-badge">listUTAs</div>
+                <div class="tool-badge">getAccount</div>
+                <div class="tool-badge">getPortfolio</div>
+                <div class="tool-badge">getOrders</div>
+                <div class="tool-badge">getQuote</div>
+                <div class="tool-badge">getMarketClock</div>
+                <div class="tool-badge">tradingStatus</div>
+                <div class="tool-badge">tradingLog</div>
+                <div class="tool-badge">tradingShow</div>
+                <div class="tool-badge">orderHistory</div>
+                <div class="tool-badge">tradeHistory</div>
+            </div>
+
+            <h3>市场数据</h3>
+            <div class="tools-showcase">
+                <div class="tool-badge">marketSearch</div>
+                <div class="tool-badge">equityGetProfile</div>
+                <div class="tool-badge">equityGetFinancials</div>
+                <div class="tool-badge">etfGetProfile</div>
+                <div class="tool-badge">newsSearch</div>
+                <div class="tool-badge">getEconomicIndicators</div>
+                <div class="tool-badge">sectorRotation</div>
+                <div class="tool-badge">derivativesGetChain</div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- 快速开始 -->
+        <section>
+            <div class="section-label">Quick Start</div>
+            <h2>
+                一条命令<br>
+                <span class="accent">完成安装</span>
+            </h2>
+            <p>
+                只需将以下消息发送给 OpenClaw，它会自动完成所有安装和配置：
+            </p>
+
+            <div class="code-block">
+<span class="code-comment"># 复制这段话发给 OpenClaw</span>
+<span class="code-command">请读取这个文档并按照步骤安装 trader-mcp：</span>
+<span class="code-string">https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCLAW_SETUP.md</span>
+
+<span class="code-command">安装完成后，验证：</span>
+1. MCP 服务器是否在运行
+2. OpenClaw 是否能调用 trader-mcp 的工具
+3. 尝试调用 listUTAs 工具
+            </div>
+
+            <p style="margin-top: 40px;">
+                或者手动安装：
+            </p>
+
+            <div class="code-block">
+<span class="code-comment"># 克隆仓库</span>
+<span class="code-command">git clone</span> https://github.com/orangeZSCB/trader-mcp.git
+<span class="code-command">cd</span> trader-mcp
+
+<span class="code-comment"># 安装依赖</span>
+<span class="code-command">pnpm install</span>
+
+<span class="code-comment"># 启动 MCP 服务器</span>
+<span class="code-command">cd</span> apps/mcp-server
+<span class="code-command">pnpm dev</span>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- 技术架构 -->
+        <section>
+            <div class="section-label">Architecture</div>
+            <h2>
+                基于 <span class="accent">MCP</span> 协议<br>
+                安全、可扩展
+            </h2>
+            <p>
+                Trader MCP 基于 Model Context Protocol (MCP) 构建，通过 Streamable HTTP 传输与 OpenClaw 通信。
+                所有敏感数据使用 AES-256-GCM 加密存储，密钥与数据分离。
+            </p>
+
+            <h3>技术栈</h3>
+            <div class="tools-showcase">
+                <div class="tool-badge">Node.js 24+</div>
+                <div class="tool-badge">TypeScript</div>
+                <div class="tool-badge">MCP SDK</div>
+                <div class="tool-badge">Zod</div>
+                <div class="tool-badge">Vercel AI SDK</div>
+                <div class="tool-badge">CCXT</div>
+                <div class="tool-badge">pnpm</div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer>
+            <p>
+                Trader MCP v0.1.0 // AGPL-3.0 License<br>
+                <a href="https://github.com/orangeZSCB/trader-mcp" target="_blank">GitHub</a> //
+                <a href="https://github.com/orangeZSCB/trader-mcp/blob/master/OPENCLAW_SETUP.md" target="_blank">安装文档</a> //
+                <a href="https://github.com/TraderAlice/OpenAlice" target="_blank">OpenAlice</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .tool-badge').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
