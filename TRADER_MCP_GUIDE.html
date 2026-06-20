@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trader MCP - AI 智能交易系统</title>
+    <title>Trader MCP // AI 智能交易系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --bg-tertiary: #252b48;
+            --accent-cyan: #00d9ff;
+            --accent-green: #00ff88;
+            --accent-yellow: #ffd700;
+            --text-primary: #e8eaf6;
+            --text-secondary: #a0a8c5;
+            --border-color: #2d3561;
+            --code-bg: #0d1117;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,436 +28,737 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
-        .container {
+        /* 背景网格效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 侧边导航 */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 40px 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-title {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-cyan);
+            border-left-color: var(--accent-cyan);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 60px 80px;
             max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 0 50px rgba(0,0,0,0.3);
         }
 
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 40px;
-            text-align: center;
+        /* Hero 区域 */
+        .hero {
+            margin-bottom: 80px;
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
         }
 
-        header h1 {
-            font-size: 3em;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
+            opacity: 0.1;
+            filter: blur(60px);
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -1px;
+            line-height: 1.1;
         }
 
-        header p {
-            font-size: 1.3em;
-            opacity: 0.95;
+        .hero h1 span {
+            color: var(--accent-cyan);
         }
 
-        .badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin: 10px 5px;
-            font-size: 0.9em;
+        .hero-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 700px;
         }
 
-        .content {
-            padding: 40px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 40px;
         }
 
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 章节 */
         section {
-            margin-bottom: 50px;
+            margin-bottom: 80px;
         }
 
         h2 {
-            color: #667eea;
-            font-size: 2em;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        h2::before {
+            content: '//';
+            color: var(--accent-cyan);
+            margin-right: 12px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         h3 {
-            color: #764ba2;
-            font-size: 1.5em;
-            margin: 25px 0 15px 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 40px 0 20px 0;
         }
 
-        .feature-grid {
+        p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        /* 特性卡片 */
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
         }
 
         .feature-card {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 32px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            border-color: var(--accent-cyan);
+            transform: translateY(-4px);
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
         }
 
         .feature-card h4 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.2em;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin-bottom: 12px;
         }
 
+        .feature-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* 代码块 */
         .code-block {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 20px;
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            overflow-x: auto;
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            line-height: 1.5;
+            margin: 24px 0;
+            overflow: hidden;
+            position: relative;
         }
 
-        .code-block .comment {
-            color: #75715e;
+        .code-header {
+            background: var(--bg-tertiary);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .code-block .command {
-            color: #a6e22e;
+        .code-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
         }
 
-        .code-block .string {
-            color: #e6db74;
-        }
-
-        .copy-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
+        .copy-button {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
             cursor: pointer;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-            transition: background 0.3s;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .copy-btn:hover {
-            background: #5568d3;
+        .copy-button:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border-color: var(--accent-cyan);
         }
 
-        .copy-btn.copied {
-            background: #a6e22e;
+        .copy-button.copied {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            border-color: var(--accent-green);
         }
 
-        .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-
-        .info {
-            background: #d1ecf1;
-            border-left: 4px solid #17a2b8;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-
-        .success {
-            background: #d4edda;
-            border-left: 4px solid #28a745;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-
-        .step {
-            background: #f8f9fa;
+        pre {
             padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            color: var(--text-primary);
+        }
+
+        .comment {
+            color: #6a737d;
+        }
+
+        .command {
+            color: var(--accent-green);
+        }
+
+        .string {
+            color: var(--accent-yellow);
+        }
+
+        .keyword {
+            color: var(--accent-cyan);
+        }
+
+        /* 步骤卡片 */
+        .step {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 24px 28px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
         }
 
         .step-number {
             display: inline-block;
-            background: #667eea;
-            color: white;
-            width: 30px;
-            height: 30px;
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             text-align: center;
-            line-height: 30px;
-            margin-right: 10px;
-            font-weight: bold;
+            line-height: 32px;
+            font-weight: 700;
+            margin-right: 12px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
+        .step-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        /* 表格 */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 24px 0;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th {
-            background: #667eea;
-            color: white;
-            padding: 15px;
+            background: var(--bg-tertiary);
+            padding: 16px 20px;
             text-align: left;
             font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
         }
 
         td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
 
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .example-box {
-            background: #f0f4ff;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .example-box h4 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .dialog {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 3px solid #764ba2;
-        }
-
-        .dialog.user {
-            border-left-color: #667eea;
-            background: #f0f4ff;
-        }
-
-        .dialog.ai {
-            border-left-color: #28a745;
-            background: #f0fff4;
-        }
-
-        footer {
-            background: #2d2d2d;
-            color: white;
-            padding: 30px 40px;
-            text-align: center;
-        }
-
-        footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        .toc {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-        }
-
-        .toc h3 {
-            margin-top: 0;
-        }
-
-        .toc ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .toc li {
-            padding: 8px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .toc li:last-child {
+        tr:last-child td {
             border-bottom: none;
         }
 
-        .toc a {
-            color: #667eea;
-            text-decoration: none;
-            transition: color 0.3s;
+        tr:hover {
+            background: var(--bg-tertiary);
         }
 
-        .toc a:hover {
-            color: #764ba2;
+        /* 提示框 */
+        .alert {
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin: 24px 0;
+            border-left: 4px solid;
         }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2em;
-            }
+        .alert-info {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: var(--accent-cyan);
+        }
 
-            .content {
-                padding: 20px;
-            }
+        .alert-success {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent-green);
+        }
 
-            .feature-grid {
+        .alert-warning {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--accent-yellow);
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .alert-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* 工具列表 */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 30px 0;
+        }
+
+        .tool-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            transition: all 0.2s;
+        }
+
+        .tool-item:hover {
+            border-color: var(--accent-cyan);
+            background: var(--bg-tertiary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .layout {
                 grid-template-columns: 1fr;
             }
+
+            .sidebar {
+                position: relative;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .main-content {
+                padding: 40px 30px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* 动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero, section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 Trader MCP</h1>
-            <p>AI 智能交易系统 - 让 OpenClaw 成为你的量化交易助手</p>
-            <div style="margin-top: 20px;">
-                <span class="badge">✓ 虚拟盘测试</span>
-                <span class="badge">✓ Trade-as-Git 安全机制</span>
-                <span class="badge">✓ 19 个交易工具</span>
-                <span class="badge">✓ 自动化策略</span>
-            </div>
-        </header>
+    <div class="layout">
+        <!-- 侧边导航 -->
+        <aside class="sidebar">
+            <div class="logo">TRADER MCP</div>
+            <div class="logo-subtitle">AI Trading System</div>
 
-        <div class="content">
-            <div class="toc">
-                <h3>📚 目录</h3>
-                <ul>
-                    <li><a href="#overview">1. 项目概述</a></li>
-                    <li><a href="#features">2. 核心功能</a></li>
-                    <li><a href="#installation">3. 一键安装</a></li>
-                    <li><a href="#configuration">4. 配置说明</a></li>
-                    <li><a href="#usage">5. 使用方法</a></li>
-                    <li><a href="#tools">6. 可用工具列表</a></li>
-                    <li><a href="#examples">7. 使用示例</a></li>
-                    <li><a href="#strategies">8. 交易策略</a></li>
-                    <li><a href="#safety">9. 安全机制</a></li>
-                    <li><a href="#troubleshooting">10. 故障排查</a></li>
-                </ul>
-            </div>
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">快速开始</div>
+                    <a href="#overview" class="nav-link">项目概述</a>
+                    <a href="#features" class="nav-link">核心功能</a>
+                    <a href="#installation" class="nav-link">一键安装</a>
+                </div>
 
+                <div class="nav-section">
+                    <div class="nav-title">配置与使用</div>
+                    <a href="#configuration" class="nav-link">配置说明</a>
+                    <a href="#usage" class="nav-link">使用方法</a>
+                    <a href="#tools" class="nav-link">工具列表</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">进阶</div>
+                    <a href="#examples" class="nav-link">使用示例</a>
+                    <a href="#strategies" class="nav-link">交易策略</a>
+                    <a href="#safety" class="nav-link">安全机制</a>
+                    <a href="#troubleshooting" class="nav-link">故障排查</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容 -->
+        <main class="main-content">
+            <!-- Hero -->
+            <section class="hero">
+                <h1>AI 驱动的<span>智能交易系统</span></h1>
+                <p class="hero-description">
+                    Trader MCP 让 OpenClaw 成为你的量化交易助手。通过 Trade-as-Git 工作流，
+                    安全、透明地执行交易操作，每一步都可追溯、可审计。
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">67</div>
+                        <div class="stat-label">交易工具</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">AES-256</div>
+                        <div class="stat-label">加密存储</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">10+</div>
+                        <div class="stat-label">交易所支持</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">审计追踪</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 项目概述 -->
             <section id="overview">
-                <h2>1. 项目概述</h2>
-                <p>Trader MCP 是一个基于 Model Context Protocol (MCP) 的智能交易系统，让 AI 助手 OpenClaw 能够安全、智能地执行交易操作。</p>
+                <h2>项目概述</h2>
+                <p>
+                    Trader MCP 是一个基于 Model Context Protocol (MCP) 的智能交易系统，让 AI 助手 OpenClaw
+                    能够安全、智能地执行交易操作。所有交易操作都遵循 Git 工作流（Trade-as-Git），确保每一步都可追溯、可审计、可回滚。
+                </p>
 
-                <div class="info">
-                    <strong>💡 核心理念：</strong>所有交易操作都遵循 Git 工作流（Trade-as-Git），确保每一步都可追溯、可审计、可回滚。
+                <div class="alert alert-info">
+                    <div class="alert-title">💡 核心理念</div>
+                    <div class="alert-content">
+                        所有交易操作都经过 stage → commit → push 流程，push 到交易所需要用户明确授权，杜绝误操作。
+                    </div>
                 </div>
 
                 <h3>适用场景</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>✅ 虚拟盘策略测试和验证</li>
-                    <li>✅ 自动化网格交易</li>
-                    <li>✅ 智能订单管理</li>
-                    <li>✅ 多账户统一管理</li>
-                    <li>✅ 交易历史分析和复盘</li>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li>虚拟盘策略测试和验证</li>
+                    <li>自动化网格交易</li>
+                    <li>智能订单管理</li>
+                    <li>多账户统一管理</li>
+                    <li>交易历史分析和复盘</li>
                 </ul>
             </section>
 
+            <!-- 核心功能 -->
             <section id="features">
-                <h2>2. 核心功能</h2>
+                <h2>核心功能</h2>
 
-                <div class="feature-grid">
+                <div class="features-grid">
                     <div class="feature-card">
-                        <h4>🔒 Trade-as-Git 安全机制</h4>
+                        <div class="feature-icon">🔒</div>
+                        <h4>Trade-as-Git 安全机制</h4>
                         <p>所有交易操作都经过 stage → commit → push 流程，push 到交易所需要用户明确授权，杜绝误操作。</p>
                     </div>
 
                     <div class="feature-card">
-                        <h4>📊 19 个交易工具</h4>
+                        <div class="feature-icon">📊</div>
+                        <h4>67 个交易工具</h4>
                         <p>涵盖查询、下单、改单、撤单、平仓等完整交易流程，满足各种交易需求。</p>
                     </div>
 
                     <div class="feature-card">
-                        <h4>🤖 AI 智能决策</h4>
+                        <div class="feature-icon">🤖</div>
+                        <h4>AI 智能决策</h4>
                         <p>OpenClaw 可以根据市场情况和策略自动执行交易，支持网格交易、RSI 过滤等策略。</p>
                     </div>
 
                     <div class="feature-card">
-                        <h4>📈 多交易所支持</h4>
+                        <div class="feature-icon">📈</div>
+                        <h4>多交易所支持</h4>
                         <p>支持 Binance、OKX、Bybit、Alpaca 等主流交易所，统一接口管理。</p>
                     </div>
 
                     <div class="feature-card">
-                        <h4>📝 完整审计日志</h4>
+                        <div class="feature-icon">📝</div>
+                        <h4>完整审计日志</h4>
                         <p>每笔交易都有完整的 commit 记录，可随时查看交易历史和决策过程。</p>
                     </div>
 
                     <div class="feature-card">
-                        <h4>⚡ 实时行情</h4>
+                        <div class="feature-icon">⚡</div>
+                        <h4>实时行情</h4>
                         <p>实时获取市场价格、持仓、订单状态，确保决策基于最新数据。</p>
                     </div>
                 </div>
             </section>
 
+            <!-- 一键安装 -->
             <section id="installation">
-                <h2>3. 一键安装</h2>
+                <h2>一键安装</h2>
 
-                <div class="success">
-                    <strong>✨ 最简单的方式：</strong>只需一条命令，OpenClaw 会自动完成所有安装和配置！
+                <div class="alert alert-success">
+                    <div class="alert-title">✨ 最简单的方式</div>
+                    <div class="alert-content">
+                        只需一条命令，OpenClaw 会自动完成所有安装和配置！
+                    </div>
                 </div>
 
                 <h3>方式一：让 OpenClaw 自动安装（推荐）</h3>
                 <p>在 OpenClaw 中发送以下消息：</p>
 
                 <div class="code-block">
-<span class="comment"># 复制这段话发给 OpenClaw</span>
+                    <div class="code-header">
+                        <span class="code-title">安装指令</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code><span class="comment"># 复制这段话发给 OpenClaw</span>
 请读取这个文档并按照步骤安装 trader-mcp：
 https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCLAW_SETUP.md
 
 安装完成后，验证：
 1. MCP 服务器是否在运行
 2. OpenClaw 是否能调用 trader-mcp 的工具
-3. 尝试调用 listUTAs 工具
+3. 尝试调用 listUTAs 工具</code></pre>
                 </div>
-
-                <button class="copy-btn" onclick="copyCode(this)">📋 复制安装指令</button>
 
                 <h3>方式二：手动安装</h3>
 
                 <div class="step">
                     <span class="step-number">1</span>
-                    <strong>克隆仓库</strong>
+                    <span class="step-title">克隆仓库</span>
                     <div class="code-block">
-<span class="command">git clone</span> https://github.com/orangeZSCB/trader-mcp.git
-<span class="command">cd</span> trader-mcp
+                        <div class="code-header">
+                            <span class="code-title">bash</span>
+                            <button class="copy-button" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <pre><code><span class="command">git clone</span> https://github.com/orangeZSCB/trader-mcp.git
+<span class="command">cd</span> trader-mcp</code></pre>
                     </div>
                 </div>
 
                 <div class="step">
                     <span class="step-number">2</span>
-                    <strong>安装依赖</strong>
+                    <span class="step-title">安装依赖</span>
                     <div class="code-block">
-<span class="command">pnpm install</span>
+                        <div class="code-header">
+                            <span class="code-title">bash</span>
+                            <button class="copy-button" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <pre><code><span class="command">pnpm install</span></code></pre>
                     </div>
                 </div>
 
                 <div class="step">
                     <span class="step-number">3</span>
-                    <strong>配置数据目录</strong>
+                    <span class="step-title">配置数据目录</span>
                     <div class="code-block">
-<span class="command">export</span> OPENALICE_HOME=/tmp/openclaw-test
+                        <div class="code-header">
+                            <span class="code-title">bash</span>
+                            <button class="copy-button" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <pre><code><span class="command">export</span> OPENALICE_HOME=/tmp/openclaw-test
 <span class="command">mkdir -p</span> $OPENALICE_HOME/data/config
 
 <span class="comment"># 创建账户配置</span>
@@ -456,54 +773,71 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
     <span class="string">"_instanceId"</span>: <span class="string">"openclaw-test-001"</span>
   }
 }]
-<span class="string">EOF</span>
+<span class="string">EOF</span></code></pre>
                     </div>
                 </div>
 
                 <div class="step">
                     <span class="step-number">4</span>
-                    <strong>启动 MCP 服务器</strong>
+                    <span class="step-title">启动 MCP 服务器</span>
                     <div class="code-block">
-<span class="command">cd</span> apps/mcp-server
-<span class="command">nohup</span> node --conditions=openalice-source --import tsx src/main.ts > /tmp/trader-mcp.log 2>&1 &
+                        <div class="code-header">
+                            <span class="code-title">bash</span>
+                            <button class="copy-button" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <pre><code><span class="command">cd</span> apps/mcp-server
+<span class="command">nohup</span> node --conditions=openalice-source --import tsx src/main.ts > /tmp/trader-mcp.log 2>&1 &</code></pre>
                     </div>
                 </div>
 
                 <div class="step">
                     <span class="step-number">5</span>
-                    <strong>配置 OpenClaw MCP</strong>
+                    <span class="step-title">配置 OpenClaw MCP</span>
                     <div class="code-block">
-<span class="command">openclaw mcp set</span> trader-mcp <span class="string">'{"transport":"streamable-http","url":"http://127.0.0.1:47400/mcp"}'</span>
+                        <div class="code-header">
+                            <span class="code-title">bash</span>
+                            <button class="copy-button" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <pre><code><span class="command">openclaw mcp set</span> trader-mcp <span class="string">'{"transport":"streamable-http","url":"http://127.0.0.1:47400/mcp"}'</span></code></pre>
                     </div>
                 </div>
 
                 <div class="step">
                     <span class="step-number">6</span>
-                    <strong>安装 Skill</strong>
+                    <span class="step-title">安装 Skill</span>
                     <div class="code-block">
-<span class="command">mkdir -p</span> ~/.openclaw/skills/openalice-trading
-<span class="command">cp</span> skills/openalice-trading/SKILL.md ~/.openclaw/skills/openalice-trading/SKILL.md
+                        <div class="code-header">
+                            <span class="code-title">bash</span>
+                            <button class="copy-button" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <pre><code><span class="command">mkdir -p</span> ~/.openclaw/skills/openalice-trading
+<span class="command">cp</span> skills/openalice-trading/SKILL.md ~/.openclaw/skills/openalice-trading/SKILL.md</code></pre>
                     </div>
                 </div>
 
                 <div class="step">
                     <span class="step-number">7</span>
-                    <strong>验证安装</strong>
+                    <span class="step-title">验证安装</span>
                     <div class="code-block">
-<span class="comment"># 检查 MCP 服务器</span>
+                        <div class="code-header">
+                            <span class="code-title">bash</span>
+                            <button class="copy-button" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <pre><code><span class="comment"># 检查 MCP 服务器</span>
 <span class="command">curl</span> http://127.0.0.1:47400/
 
 <span class="comment"># 检查 OpenClaw 配置</span>
 <span class="command">openclaw mcp list</span>
 
 <span class="comment"># 测试工具调用</span>
-<span class="command">openclaw agent</span> --agent main -m <span class="string">"调用 listUTAs 工具"</span> --local
+<span class="command">openclaw agent</span> --agent main -m <span class="string">"调用 listUTAs 工具"</span> --local</code></pre>
                     </div>
                 </div>
             </section>
 
+            <!-- 配置说明 -->
             <section id="configuration">
-                <h2>4. 配置说明</h2>
+                <h2>配置说明</h2>
 
                 <h3>环境变量</h3>
                 <table>
@@ -542,7 +876,11 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
                 <p>编辑 <code>$OPENALICE_HOME/data/config/accounts.json</code>：</p>
 
                 <div class="code-block">
-[
+                    <div class="code-header">
+                        <span class="code-title">accounts.json</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code>[
   {
     <span class="string">"id"</span>: <span class="string">"mock-test"</span>,
     <span class="string">"label"</span>: <span class="string">"虚拟盘测试账户"</span>,
@@ -563,23 +901,29 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
       <span class="string">"apiSecret"</span>: <span class="string">"your-api-secret"</span>
     }
   }
-]
+]</code></pre>
                 </div>
 
-                <div class="info">
-                    <strong>💡 提示：</strong>建议先用 <code>mock-simulator</code> 虚拟盘测试，熟悉后再接入真实交易所。
+                <div class="alert alert-info">
+                    <div class="alert-title">💡 提示</div>
+                    <div class="alert-content">
+                        建议先用 <code>mock-simulator</code> 虚拟盘测试，熟悉后再接入真实交易所。
+                    </div>
                 </div>
             </section>
 
+            <!-- 使用方法 -->
             <section id="usage">
-                <h2>5. 使用方法</h2>
+                <h2>使用方法</h2>
 
                 <h3>命令行方式</h3>
 
-                <div class="example-box">
-                    <h4>📊 查询操作</h4>
-                    <div class="code-block">
-<span class="comment"># 列出所有账户</span>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">查询操作</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code><span class="comment"># 列出所有账户</span>
 <span class="command">openclaw agent</span> --agent main -m <span class="string">"列出所有交易账户"</span> --local
 
 <span class="comment"># 查看持仓</span>
@@ -589,14 +933,15 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
 <span class="command">openclaw agent</span> --agent main -m <span class="string">"查看我的订单"</span> --local
 
 <span class="comment"># 查看账户余额</span>
-<span class="command">openclaw agent</span> --agent main -m <span class="string">"查看账户余额"</span> --local
-                    </div>
+<span class="command">openclaw agent</span> --agent main -m <span class="string">"查看账户余额"</span> --local</code></pre>
                 </div>
 
-                <div class="example-box">
-                    <h4>💰 交易操作</h4>
-                    <div class="code-block">
-<span class="comment"># 下单（会走审批流程）</span>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">交易操作</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code><span class="comment"># 下单（会走审批流程）</span>
 <span class="command">openclaw agent</span> --agent main -m <span class="string">"在 mock-test 上买 0.1 BTCUSDT，市价单"</span> --local
 
 <span class="comment"># 改单</span>
@@ -606,323 +951,288 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
 <span class="command">openclaw agent</span> --agent main -m <span class="string">"取消订单 123"</span> --local
 
 <span class="comment"># 平仓</span>
-<span class="command">openclaw agent</span> --agent main -m <span class="string">"平掉 AAPL 的所有持仓"</span> --local
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h4>📈 策略执行</h4>
-                    <div class="code-block">
-<span class="comment"># 启动网格交易策略</span>
-<span class="command">openclaw agent</span> --agent main -m <span class="string">"启动网格交易策略，参数：区间 80-120 USD，10 个网格，每格 1000 USD"</span> --local
-
-<span class="comment"># 查看策略执行结果</span>
-<span class="command">openclaw agent</span> --agent main -m <span class="string">"查看网格策略的执行情况"</span> --local
-                    </div>
+<span class="command">openclaw agent</span> --agent main -m <span class="string">"平掉 AAPL 的所有持仓"</span> --local</code></pre>
                 </div>
 
                 <h3>交互式会话</h3>
                 <p>也可以启动交互式会话，持续对话：</p>
 
                 <div class="code-block">
-<span class="command">openclaw agent</span> --agent main --local
+                    <div class="code-header">
+                        <span class="code-title">bash</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code><span class="command">openclaw agent</span> --agent main --local
 
 <span class="comment"># 然后在提示符下输入指令</span>
 > 查看账户状态
 > 帮我分析一下 AAPL 的行情
-> 下一个限价单，100 买 10 股 AAPL
+> 下一个限价单，100 买 10 股 AAPL</code></pre>
                 </div>
             </section>
 
+            <!-- 工具列表 -->
             <section id="tools">
-                <h2>6. 可用工具列表</h2>
+                <h2>可用工具列表</h2>
 
                 <h3>查询工具（无需授权）</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>工具名</th>
-                            <th>功能</th>
-                            <th>示例</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>listUTAs</code></td>
-                            <td>列出所有交易账户</td>
-                            <td>"列出所有账户"</td>
-                        </tr>
-                        <tr>
-                            <td><code>getAccount</code></td>
-                            <td>获取账户信息</td>
-                            <td>"查看账户余额"</td>
-                        </tr>
-                        <tr>
-                            <td><code>getPortfolio</code></td>
-                            <td>获取持仓</td>
-                            <td>"查看我的持仓"</td>
-                        </tr>
-                        <tr>
-                            <td><code>getOrders</code></td>
-                            <td>获取订单</td>
-                            <td>"查看我的订单"</td>
-                        </tr>
-                        <tr>
-                            <td><code>getQuote</code></td>
-                            <td>获取实时报价</td>
-                            <td>"AAPL 现在多少钱"</td>
-                        </tr>
-                        <tr>
-                            <td><code>getMarketClock</code></td>
-                            <td>获取市场状态</td>
-                            <td>"市场开了吗"</td>
-                        </tr>
-                        <tr>
-                            <td><code>tradingStatus</code></td>
-                            <td>查看 staging area</td>
-                            <td>"查看待提交的订单"</td>
-                        </tr>
-                        <tr>
-                            <td><code>tradingLog</code></td>
-                            <td>查看 commit 历史</td>
-                            <td>"查看交易历史"</td>
-                        </tr>
-                        <tr>
-                            <td><code>tradingShow</code></td>
-                            <td>查看某个 commit 详情</td>
-                            <td>"查看 commit abc123"</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="tools-grid">
+                    <div class="tool-item">listUTAs</div>
+                    <div class="tool-item">getAccount</div>
+                    <div class="tool-item">getPortfolio</div>
+                    <div class="tool-item">getOrders</div>
+                    <div class="tool-item">getQuote</div>
+                    <div class="tool-item">getMarketClock</div>
+                    <div class="tool-item">tradingStatus</div>
+                    <div class="tool-item">tradingLog</div>
+                    <div class="tool-item">tradingShow</div>
+                </div>
 
                 <h3>交易工具（需要用户授权）</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>工具名</th>
-                            <th>功能</th>
-                            <th>示例</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>placeOrder</code></td>
-                            <td>下单（stage）</td>
-                            <td>"买 10 股 AAPL"</td>
-                        </tr>
-                        <tr>
-                            <td><code>modifyOrder</code></td>
-                            <td>改单（stage）</td>
-                            <td>"把订单 123 价格改成 105"</td>
-                        </tr>
-                        <tr>
-                            <td><code>cancelOrder</code></td>
-                            <td>撤单（stage）</td>
-                            <td>"取消订单 123"</td>
-                        </tr>
-                        <tr>
-                            <td><code>closePosition</code></td>
-                            <td>平仓（stage）</td>
-                            <td>"平掉 AAPL 持仓"</td>
-                        </tr>
-                        <tr>
-                            <td><code>tradingCommit</code></td>
-                            <td>提交（commit）</td>
-                            <td>自动执行</td>
-                        </tr>
-                        <tr>
-                            <td><code>tradingPush</code></td>
-                            <td>推送（push，需授权）</td>
-                            <td>用户确认后执行</td>
-                        </tr>
-                        <tr>
-                            <td><code>tradingReject</code></td>
-                            <td>拒绝（reject）</td>
-                            <td>"取消这笔交易"</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="tools-grid">
+                    <div class="tool-item">placeOrder</div>
+                    <div class="tool-item">modifyOrder</div>
+                    <div class="tool-item">cancelOrder</div>
+                    <div class="tool-item">closePosition</div>
+                    <div class="tool-item">tradingCommit</div>
+                    <div class="tool-item">tradingPush</div>
+                    <div class="tool-item">tradingReject</div>
+                </div>
+
+                <h3>市场数据工具</h3>
+                <div class="tools-grid">
+                    <div class="tool-item">marketSearch</div>
+                    <div class="tool-item">equityGetProfile</div>
+                    <div class="tool-item">equityGetFinancials</div>
+                    <div class="tool-item">etfGetProfile</div>
+                    <div class="tool-item">newsSearch</div>
+                    <div class="tool-item">getEconomicIndicators</div>
+                    <div class="tool-item">sectorRotation</div>
+                    <div class="tool-item">derivativesGetChain</div>
+                </div>
+
+                <h3>账户管理工具</h3>
+                <div class="tools-grid">
+                    <div class="tool-item">addAccount</div>
+                    <div class="tool-item">removeAccount</div>
+                    <div class="tool-item">listAccounts</div>
+                </div>
             </section>
 
+            <!-- 使用示例 -->
             <section id="examples">
-                <h2>7. 使用示例</h2>
+                <h2>使用示例</h2>
 
                 <h3>示例 1：完整的下单流程</h3>
 
-                <div class="dialog user">
-                    <strong>用户：</strong>在 mock-test 上买 10 股 AAPL，限价 100 USD
-                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">对话流程</span>
+                    </div>
+                    <pre><code><span class="comment">用户：</span>在 mock-test 上买 10 股 AAPL，限价 100 USD
 
-                <div class="dialog ai">
-                    <strong>OpenClaw：</strong>好的，我来帮你下单。
+<span class="comment">OpenClaw：</span>好的，我来帮你下单。
 
-                    <p><strong>📋 Pending Commit</strong></p>
-                    <table>
-                        <tr><td>账户</td><td>mock-test</td></tr>
-                        <tr><td>操作</td><td>BUY 10 AAPL</td></tr>
-                        <tr><td>订单类型</td><td>LMT (限价)</td></tr>
-                        <tr><td>价格</td><td>100 USD</td></tr>
-                        <tr><td>Commit Hash</td><td>abc123</td></tr>
-                    </table>
+<span class="comment">📋 Pending Commit</span>
+┌─────────────┬─────────────────────┐
+│ 账户        │ mock-test           │
+│ 操作        │ BUY 10 AAPL         │
+│ 订单类型    │ LMT (限价)          │
+│ 价格        │ 100 USD             │
+│ Commit Hash │ abc123              │
+└─────────────┴─────────────────────┘
 
-                    <p><strong>⚠️ 审批 Ritual</strong></p>
-                    <p>这是 IRREVERSIBLE 操作。Push 之后订单会发送到交易所执行。</p>
-                    <p><strong>确认 push 吗？</strong>回复 <code>yes</code> 或 <code>push</code> 我就执行。</p>
-                </div>
+<span class="comment">⚠️ 审批 Ritual</span>
+这是 IRREVERSIBLE 操作。Push 之后订单会发送到交易所执行。
+<span class="keyword">确认 push 吗？</span>回复 <span class="string">yes</span> 或 <span class="string">push</span> 我就执行。
 
-                <div class="dialog user">
-                    <strong>用户：</strong>yes
-                </div>
+<span class="comment">用户：</span>yes
 
-                <div class="dialog ai">
-                    <strong>OpenClaw：</strong>✅ 订单已提交！
-
-                    <p>订单 ID: 12345<br>
-                    状态: 已提交到交易所<br>
-                    Commit: abc123</p>
+<span class="comment">OpenClaw：</span>✅ 订单已提交！
+订单 ID: 12345
+状态: 已提交到交易所
+Commit: abc123</code></pre>
                 </div>
 
                 <h3>示例 2：网格交易策略</h3>
 
-                <div class="dialog user">
-                    <strong>用户：</strong>启动网格交易策略，在 AAPL 上执行，区间 80-120 USD，10 个网格，每格 1000 USD
-                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">对话流程</span>
+                    </div>
+                    <pre><code><span class="comment">用户：</span>启动网格交易策略，在 AAPL 上执行，区间 80-120 USD，10 个网格，每格 1000 USD
 
-                <div class="dialog ai">
-                    <strong>OpenClaw：</strong>好的，我来设置网格交易策略。
+<span class="comment">OpenClaw：</span>好的，我来设置网格交易策略。
 
-                    <p><strong>📊 策略参数</strong></p>
-                    <ul>
-                        <li>交易对：AAPL</li>
-                        <li>网格区间：80-120 USD</li>
-                        <li>网格数量：10 格（间距 4 USD）</li>
-                        <li>每格金额：1000 USD</li>
-                    </ul>
+<span class="comment">📊 策略参数</span>
+• 交易对：AAPL
+• 网格区间：80-120 USD
+• 网格数量：10 格（间距 4 USD）
+• 每格金额：1000 USD
 
-                    <p><strong>📋 已暂存的订单</strong></p>
-                    <table>
-                        <tr><th>类型</th><th>价格</th><th>数量</th><th>金额</th></tr>
-                        <tr><td>BUY</td><td>80</td><td>12.5</td><td>1000</td></tr>
-                        <tr><td>BUY</td><td>84</td><td>11.9</td><td>1000</td></tr>
-                        <tr><td>BUY</td><td>88</td><td>11.4</td><td>1000</td></tr>
-                        <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-                        <tr><td>SELL</td><td>120</td><td>8.3</td><td>1000</td></tr>
-                    </table>
+<span class="comment">📋 已暂存的订单</span>
+┌──────┬───────┬──────────┬────────┐
+│ 类型 │ 价格  │ 数量     │ 金额   │
+├──────┼───────┼──────────┼────────┤
+│ BUY  │ 80    │ 12.5     │ 1000   │
+│ BUY  │ 84    │ 11.9     │ 1000   │
+│ BUY  │ 88    │ 11.4     │ 1000   │
+│ ...  │ ...   │ ...      │ ...    │
+│ SELL │ 120   │ 8.3      │ 1000   │
+└──────┴───────┴──────────┴────────┘
 
-                    <p>确认 push 这些订单吗？</p>
-                </div>
+确认 push 这些订单吗？
 
-                <div class="dialog user">
-                    <strong>用户：</strong>确认
-                </div>
+<span class="comment">用户：</span>确认
 
-                <div class="dialog ai">
-                    <strong>OpenClaw：</strong>✅ 网格订单已全部提交！
-
-                    <p>共 10 个订单已提交到交易所，策略开始执行。</p>
+<span class="comment">OpenClaw：</span>✅ 网格订单已全部提交！
+共 10 个订单已提交到交易所，策略开始执行。</code></pre>
                 </div>
             </section>
 
+            <!-- 交易策略 -->
             <section id="strategies">
-                <h2>8. 交易策略</h2>
+                <h2>交易策略</h2>
 
                 <h3>网格交易策略</h3>
 
-                <div class="info">
-                    <strong>💡 策略原理：</strong>在价格区间内设置多个网格，当价格下跌到网格线时买入，上涨到网格线时卖出。利用震荡行情反复获利，胜率高（70-80%）。
+                <div class="alert alert-info">
+                    <div class="alert-title">💡 策略原理</div>
+                    <div class="alert-content">
+                        在价格区间内设置多个网格，当价格下跌到网格线时买入，上涨到网格线时卖出。利用震荡行情反复获利，胜率高（70-80%）。
+                    </div>
                 </div>
 
                 <h4>策略参数</h4>
                 <table>
-                    <tr><th>参数</th><th>说明</th><th>建议值</th></tr>
-                    <tr><td>交易对</td><td>交易标的</td><td>AAPL / BTCUSDT</td></tr>
-                    <tr><td>网格区间</td><td>价格上下限</td><td>根据历史波动设置</td></tr>
-                    <tr><td>网格数量</td><td>网格线数量</td><td>10-20 格</td></tr>
-                    <tr><td>每格金额</td><td>每个网格的交易金额</td><td>1000-5000 USD</td></tr>
-                    <tr><td>RSI 过滤</td><td>RSI 指标过滤</td><td>< 35 买入，> 65 卖出</td></tr>
+                    <tr>
+                        <th>参数</th>
+                        <th>说明</th>
+                        <th>建议值</th>
+                    </tr>
+                    <tr>
+                        <td>交易对</td>
+                        <td>交易标的</td>
+                        <td>AAPL / BTCUSDT</td>
+                    </tr>
+                    <tr>
+                        <td>网格区间</td>
+                        <td>价格上下限</td>
+                        <td>根据历史波动设置</td>
+                    </tr>
+                    <tr>
+                        <td>网格数量</td>
+                        <td>网格线数量</td>
+                        <td>10-20 格</td>
+                    </tr>
+                    <tr>
+                        <td>每格金额</td>
+                        <td>每个网格的交易金额</td>
+                        <td>1000-5000 USD</td>
+                    </tr>
+                    <tr>
+                        <td>RSI 过滤</td>
+                        <td>RSI 指标过滤</td>
+                        <td>&lt; 35 买入，&gt; 65 卖出</td>
+                    </tr>
                 </table>
 
                 <h4>预期效果</h4>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>✅ 胜率：70-80%</li>
-                    <li>✅ 盈亏比：1:1.5（亏损 50，盈利 75）</li>
-                    <li>✅ 月化收益：5-15%（震荡行情）</li>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li>胜率：70-80%</li>
+                    <li>盈亏比：1:1.5（亏损 50，盈利 75）</li>
+                    <li>月化收益：5-15%（震荡行情）</li>
                 </ul>
 
-                <div class="warning">
-                    <strong>⚠️ 风险提示：</strong>网格交易策略在单边行情（持续上涨或下跌）中可能亏损。建议设置止损，并密切监控策略执行情况。
+                <div class="alert alert-warning">
+                    <div class="alert-title">⚠️ 风险提示</div>
+                    <div class="alert-content">
+                        网格交易策略在单边行情（持续上涨或下跌）中可能亏损。建议设置止损，并密切监控策略执行情况。
+                    </div>
                 </div>
             </section>
 
+            <!-- 安全机制 -->
             <section id="safety">
-                <h2>9. 安全机制</h2>
+                <h2>安全机制</h2>
 
                 <h3>Trade-as-Git 工作流</h3>
 
                 <div class="step">
                     <span class="step-number">1</span>
-                    <strong>Stage（暂存）</strong>
+                    <span class="step-title">Stage（暂存）</span>
                     <p>所有交易操作先暂存到 staging area，不会立即执行。</p>
                 </div>
 
                 <div class="step">
                     <span class="step-number">2</span>
-                    <strong>Commit（提交）</strong>
+                    <span class="step-title">Commit（提交）</span>
                     <p>生成 commit hash，记录交易决策和参数。</p>
                 </div>
 
                 <div class="step">
                     <span class="step-number">3</span>
-                    <strong>Push（推送）</strong>
+                    <span class="step-title">Push（推送）</span>
                     <p>需要用户明确授权后，才会推送到交易所执行。</p>
                 </div>
 
-                <div class="success">
-                    <strong>✅ 安全保障：</strong>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>所有操作都有完整的 commit 记录</li>
-                        <li>Push 操作需要用户明确授权</li>
-                        <li>可以随时查看和审计交易历史</li>
-                        <li>支持 reject 操作，取消未 push 的交易</li>
-                    </ul>
+                <div class="alert alert-success">
+                    <div class="alert-title">✅ 安全保障</div>
+                    <div class="alert-content">
+                        <ul style="margin-left: 20px;">
+                            <li>所有操作都有完整的 commit 记录</li>
+                            <li>Push 操作需要用户明确授权</li>
+                            <li>可以随时查看和审计交易历史</li>
+                            <li>支持 reject 操作，取消未 push 的交易</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <h3>数据加密</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
                     <li>敏感数据（API keys）使用 AES-256-GCM 加密存储</li>
                     <li>加密密钥存储在 <code>$OPENALICE_HOME/sealing.key</code></li>
                     <li>MCP 服务器默认只监听 <code>127.0.0.1</code>，不对外暴露</li>
                 </ul>
             </section>
 
+            <!-- 故障排查 -->
             <section id="troubleshooting">
-                <h2>10. 故障排查</h2>
+                <h2>故障排查</h2>
 
                 <h3>MCP 服务器无法启动</h3>
 
-                <div class="warning">
-                    <strong>问题：</strong>端口 47400 被占用
+                <div class="alert alert-warning">
+                    <div class="alert-title">问题：端口 47400 被占用</div>
                 </div>
 
                 <div class="code-block">
-<span class="comment"># 检查端口占用</span>
+                    <div class="code-header">
+                        <span class="code-title">解决方案</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code><span class="comment"># 检查端口占用</span>
 <span class="command">lsof -i :47400</span>
 
 <span class="comment"># 杀掉占用进程</span>
 <span class="command">kill -9</span> &lt;PID&gt;
 
 <span class="comment"># 或者使用其他端口</span>
-<span class="command">export</span> OPENALICE_TRADING_MCP_PORT=47401
+<span class="command">export</span> OPENALICE_TRADING_MCP_PORT=47401</code></pre>
                 </div>
 
                 <h3>OpenClaw 无法连接 MCP</h3>
 
-                <div class="warning">
-                    <strong>问题：</strong>OpenClaw 调用工具失败
+                <div class="alert alert-warning">
+                    <div class="alert-title">问题：OpenClaw 调用工具失败</div>
                 </div>
 
                 <div class="code-block">
-<span class="comment"># 检查 MCP 服务器是否运行</span>
+                    <div class="code-header">
+                        <span class="code-title">解决方案</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code><span class="comment"># 检查 MCP 服务器是否运行</span>
 <span class="command">curl</span> http://127.0.0.1:47400/
 
 <span class="comment"># 应该返回：</span>
@@ -932,17 +1242,21 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
 <span class="command">openclaw mcp list</span>
 
 <span class="comment"># 重新配置</span>
-<span class="command">openclaw mcp set</span> trader-mcp <span class="string">'{"transport":"streamable-http","url":"http://127.0.0.1:47400/mcp"}'</span>
+<span class="command">openclaw mcp set</span> trader-mcp <span class="string">'{"transport":"streamable-http","url":"http://127.0.0.1:47400/mcp"}'</span></code></pre>
                 </div>
 
                 <h3>Skill 未加载</h3>
 
-                <div class="warning">
-                    <strong>问题：</strong>OpenClaw 不识别交易指令
+                <div class="alert alert-warning">
+                    <div class="alert-title">问题：OpenClaw 不识别交易指令</div>
                 </div>
 
                 <div class="code-block">
-<span class="comment"># 检查 skill 文件</span>
+                    <div class="code-header">
+                        <span class="code-title">解决方案</span>
+                        <button class="copy-button" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code><span class="comment"># 检查 skill 文件</span>
 <span class="command">ls</span> ~/.openclaw/skills/openalice-trading/SKILL.md
 
 <span class="comment"># 检查 OpenClaw 是否识别</span>
@@ -950,53 +1264,35 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
 
 <span class="comment"># 重新安装 skill</span>
 <span class="command">mkdir -p</span> ~/.openclaw/skills/openalice-trading
-<span class="command">cp</span> skills/openalice-trading/SKILL.md ~/.openclaw/skills/openalice-trading/SKILL.md
-                </div>
-
-                <h3>交易工具调用失败</h3>
-
-                <div class="warning">
-                    <strong>问题：</strong>工具返回错误
-                </div>
-
-                <div class="code-block">
-<span class="comment"># 查看 MCP 服务器日志</span>
-<span class="command">tail -f</span> /tmp/trader-mcp.log
-
-<span class="comment"># 检查账户配置</span>
-<span class="command">cat</span> $OPENALICE_HOME/data/config/accounts.json
-
-<span class="comment"># 重启 MCP 服务器</span>
-<span class="command">pkill -f</span> "mcp-server/src/main.ts"
-<span class="command">cd</span> apps/mcp-server && <span class="command">nohup</span> node --conditions=openalice-source --import tsx src/main.ts > /tmp/trader-mcp.log 2>&1 &
+<span class="command">cp</span> skills/openalice-trading/SKILL.md ~/.openclaw/skills/openalice-trading/SKILL.md</code></pre>
                 </div>
             </section>
-        </div>
 
-        <footer>
-            <p><strong>Trader MCP</strong> - AI 智能交易系统</p>
-            <p style="margin-top: 10px;">
-                <a href="https://github.com/orangeZSCB/trader-mcp" target="_blank">GitHub</a> |
-                <a href="https://github.com/orangeZSCB/trader-mcp/blob/master/OPENCLAW_SETUP.md" target="_blank">安装文档</a> |
-                <a href="https://github.com/TraderAlice/OpenAlice" target="_blank">OpenAlice</a>
-            </p>
-            <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">
-                许可证：AGPL-3.0 | 版本：0.1.0
-            </p>
-        </footer>
+            <!-- Footer -->
+            <footer style="margin-top: 100px; padding-top: 40px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-secondary);">
+                <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+                    Trader MCP v0.1.0 // AGPL-3.0 License
+                </p>
+                <p style="margin-top: 10px; font-size: 0.85rem;">
+                    <a href="https://github.com/orangeZSCB/trader-mcp" style="color: var(--accent-cyan); text-decoration: none;">GitHub</a> //
+                    <a href="https://github.com/orangeZSCB/trader-mcp/blob/master/OPENCLAW_SETUP.md" style="color: var(--accent-cyan); text-decoration: none;">安装文档</a> //
+                    <a href="https://github.com/TraderAlice/OpenAlice" style="color: var(--accent-cyan); text-decoration: none;">OpenAlice</a>
+                </p>
+            </footer>
+        </main>
     </div>
 
     <script>
         function copyCode(btn) {
-            const codeBlock = btn.nextElementSibling;
+            const codeBlock = btn.closest('.code-block').querySelector('code');
             const code = codeBlock.textContent;
 
             navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = '✓ 已复制';
+                btn.textContent = '已复制';
                 btn.classList.add('copied');
 
                 setTimeout(() => {
-                    btn.textContent = '📋 复制安装指令';
+                    btn.textContent = '复制';
                     btn.classList.remove('copied');
                 }, 2000);
             });
