@@ -66,6 +66,7 @@ import { CommodityCatalog } from '@openalice-trading/alice-core/domain/market-da
 import { createReferenceData } from '@openalice-trading/alice-core/domain/market-data/reference/service.js'
 import { createBarService } from '@openalice-trading/alice-core/domain/market-data/bars/index.js'
 import { NewsCollectorStore } from '@openalice-trading/alice-core/domain/news/store.js'
+import { NewsCollector } from '@openalice-trading/alice-core/domain/news/collector/rss.js'
 
 // ==================== Config ====================
 
@@ -385,6 +386,7 @@ async function main(): Promise<void> {
     if (stopping) return
     stopping = true
     console.log(`[mcp] ${signal} → shutdown`)
+    if (newsCollector) newsCollector.stop()
     await uta.shutdown(signal).catch((e) => console.warn('[mcp] uta shutdown error:', e))
     process.exit(0)
   }
@@ -450,12 +452,24 @@ async function main(): Promise<void> {
   })
 
   let newsStore: NewsCollectorStore | null = null
+  let newsCollector: NewsCollector | null = null
   if (config.news.enabled) {
     newsStore = new NewsCollectorStore({
       maxInMemory: config.news.maxInMemory,
       retentionDays: config.news.retentionDays,
     })
     await newsStore.init()
+
+    // Start news collector if feeds are configured
+    if (config.news.feeds.length > 0) {
+      newsCollector = new NewsCollector({
+        store: newsStore,
+        feeds: config.news.feeds,
+        intervalMs: config.news.intervalMinutes * 60 * 1000,
+      })
+      newsCollector.start()
+      console.log(`[mcp] news collector started (${config.news.feeds.length} feeds, every ${config.news.intervalMinutes}m)`)
+    }
   }
 
   // 6. MCP server with all tools
