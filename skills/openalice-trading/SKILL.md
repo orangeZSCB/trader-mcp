@@ -61,6 +61,8 @@ tool table.
 | `orderHistory` | Per-order lifecycle (submitted → filled / cancelled). |
 | `tradeHistory` | Fills only, with execution price + qty + value. |
 | `simulatePriceChange` | Dry-run portfolio impact of a hypothetical move. |
+| `searchBars` | Find K-line sources for a symbol — returns barIds for quant analysis. |
+| `calculateQuant` | Run technical-analysis scripts over K-lines (barId-keyed, v2 calculator). |
 
 ### State-changing — local (broker untouched)
 
