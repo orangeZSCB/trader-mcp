@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trader MCP · 用户使用指南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f1e8;
+  --cream-deep: #ebe5d6;
+  --ink: #1a1814;
+  --ink-soft: #2d2a24;
+  --vermillion: #c2410c;
+  --vermillion-deep: #9a3412;
+  --gold: #a16207;
+  --forest: #166534;
+  --slate: #57534e;
+  --rule: #d6d0c0;
+  --paper: #fbf8f1;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 1000;
+  mix-blend-mode: multiply;
+}
+
+/* Masthead */
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.masthead-mark {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.masthead-mark .dot {
+  color: var(--vermillion);
+}
+
+.masthead-meta {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--slate);
+  font-weight: 500;
+}
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Sidebar */
+.sidebar {
+  border-right: 1px solid var(--rule);
+  padding: 48px 28px;
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+  background: var(--cream);
+}
+
+.side-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--vermillion);
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-left: 12px;
+}
+
+.side-nav { list-style: none; }
+
+.side-nav li { margin-bottom: 2px; }
+
+.side-nav a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.92rem;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.side-nav a:hover {
+  color: var(--vermillion);
+  border-left-color: var(--vermillion);
+  background: rgba(194, 65, 12, 0.04);
+}
+
+.side-nav .sub { padding-left: 24px; font-size: 0.85rem; color: var(--slate); }
+
+/* Main content */
+main {
+  padding: 64px 72px 120px;
+  max-width: 920px;
+}
+
+/* Hero */
+.hero {
+  padding-bottom: 56px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 64px;
+  position: relative;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--ink);
+}
+
+.hero-eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--vermillion);
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--vermillion);
+}
+
+.hero-lede {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 680px;
+  font-weight: 400;
+}
+
+.hero-lede .drop {
+  font-size: 3.5rem;
+  float: left;
+  line-height: 0.9;
+  margin: 0.1em 0.15em 0 0;
+  color: var(--vermillion);
+  font-weight: 800;
+}
+
+/* Sections */
+section {
+  margin-bottom: 80px;
+  scroll-margin-top: 90px;
+}
+
+.section-number {
+  display: inline-block;
+  font-family: 'Fraunces', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--vermillion);
+  margin-right: 12px;
+  letter-spacing: 0.05em;
+}
+
+h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+h2 .ornament {
+  color: var(--vermillion);
+  font-style: italic;
+  font-weight: 400;
+}
+
+h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 40px 0 16px;
+  letter-spacing: -0.01em;
+}
+
+h3::before {
+  content: '§ ';
+  color: var(--vermillion);
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 18px;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+}
+
+p strong { color: var(--ink); font-weight: 600; }
+
+/* Pull quote */
+.pullquote {
+  font-family: 'Fraunces', serif;
+  font-size: 1.75rem;
+  line-height: 1.35;
+  color: var(--ink);
+  padding: 32px 0 32px 32px;
+  border-left: 3px solid var(--vermillion);
+  margin: 40px 0;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.pullquote cite {
+  display: block;
+  font-size: 0.85rem;
+  font-style: normal;
+  color: var(--slate);
+  margin-top: 12px;
+  letter-spacing: 0.05em;
+}
+
+/* Workflow diagram */
+.workflow {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 40px;
+  margin: 32px 0;
+  position: relative;
+}
+
+.workflow::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 40px; height: 40px;
+  border-top: 3px solid var(--vermillion);
+  border-left: 3px solid var(--vermillion);
+}
+
+.workflow::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 40px; height: 40px;
+  border-bottom: 3px solid var(--vermillion);
+  border-right: 3px solid var(--vermillion);
+}
+
+.workflow-title {
+  font-family: 'Fraunces', serif;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--vermillion);
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.flow-steps {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 24px 0;
+}
+
+.flow-step {
+  flex: 1;
+  padding: 20px;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  position: relative;
+}
+
+.flow-step + .flow-step { border-left: none; }
+
+.flow-step .num {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--vermillion);
+  line-height: 1;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.flow-step .name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.flow-step .desc {
+  font-size: 0.85rem;
+  color: var(--slate);
+  line-height: 1.5;
+}
+
+.flow-step.danger { background: rgba(194, 65, 12, 0.06); }
+.flow-step.danger .name { color: var(--vermillion-deep); }
+
+.flow-arrow {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--vermillion);
+  font-size: 1.2rem;
+  z-index: 2;
+  background: var(--paper);
+  padding: 0 4px;
+}
+
+/* Tool tables */
+.tool-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0 32px;
+  font-size: 0.95rem;
+}
+
+.tool-table thead {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.tool-table th {
+  text-align: left;
+  padding: 14px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.tool-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+.tool-table tr:last-child td { border-bottom: 2px solid var(--ink); }
+
+.tool-table tr:hover { background: rgba(194, 65, 12, 0.03); }
+
+.tool-table code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  color: var(--vermillion-deep);
+  background: rgba(194, 65, 12, 0.08);
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.tool-table .category {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--slate);
+  font-size: 0.9rem;
+}
+
+/* Code blocks */
+.code-block {
+  background: var(--ink);
+  color: #e8e4d8;
+  padding: 24px 28px;
+  border-radius: 2px;
+  margin: 24px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  position: relative;
+  border-left: 3px solid var(--vermillion);
+}
+
+.code-block::before {
+  content: attr(data-label);
+  position: absolute;
+  top: 0; right: 0;
+  background: var(--vermillion);
+  color: var(--cream);
+  padding: 4px 12px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+}
+
+.code-block .k { color: #f59e0b; }
+.code-block .s { color: #86efac; }
+.code-block .c { color: #78716c; font-style: italic; }
+.code-block .n { color: #93c5fd; }
+
+/* Callout boxes */
+.callout {
+  padding: 24px 28px;
+  margin: 28px 0;
+  border-left: 3px solid;
+  background: var(--paper);
+}
+
+.callout.warn { border-color: var(--gold); }
+.callout.danger { border-color: var(--vermillion); background: rgba(194, 65, 12, 0.04); }
+.callout.note { border-color: var(--forest); }
+
+.callout-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.callout.warn .callout-title { color: var(--gold); }
+.callout.danger .callout-title { color: var(--vermillion); }
+.callout.note .callout-title { color: var(--forest); }
+
+.callout p { margin-bottom: 8px; font-size: 0.95rem; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* Ritual steps */
+.ritual {
+  counter-reset: ritual;
+  list-style: none;
+  padding: 0;
+  margin: 32px 0;
+}
+
+.ritual li {
+  counter-increment: ritual;
+  padding: 20px 24px 20px 72px;
+  margin-bottom: 12px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  position: relative;
+  min-height: 80px;
+}
+
+.ritual li::before {
+  content: counter(ritual, decimal-leading-zero);
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  font-family: 'Fraunces', serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--vermillion);
+  font-style: italic;
+  line-height: 1;
+}
+
+.ritual li strong {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.ritual li p { margin: 0; font-size: 0.95rem; color: var(--ink-soft); }
+
+/* Example dialog */
+.dialog {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 28px;
+  margin: 24px 0;
+  font-size: 0.95rem;
+}
+
+.dialog-line {
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.dialog-line:last-child { border-bottom: none; }
+
+.dialog-line .speaker {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  margin-right: 10px;
+  border-radius: 2px;
+}
+
+.dialog-line.user .speaker {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.dialog-line.agent .speaker {
+  background: var(--vermillion);
+  color: var(--cream);
+}
+
+.dialog-line .content {
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.dialog-line .content code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  color: var(--vermillion-deep);
+  background: rgba(194, 65, 12, 0.08);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* Footer */
+.colophon {
+  border-top: 2px solid var(--ink);
+  padding-top: 32px;
+  margin-top: 80px;
+  font-size: 0.85rem;
+  color: var(--slate);
+}
+
+.colophon p { margin-bottom: 10px; }
+
+.colophon .mark {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* Inline code */
+p code, li code, td code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  color: var(--vermillion-deep);
+  background: rgba(194, 65, 12, 0.08);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+ul, ol { margin: 16px 0 20px 24px; color: var(--ink-soft); }
+li { margin-bottom: 8px; }
+
+/* Responsive */
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main { padding: 40px 28px 80px; }
+  .hero h1 { font-size: 2.8rem; }
+  h2 { font-size: 1.8rem; }
+  .flow-steps { flex-direction: column; }
+  .flow-step + .flow-step { border-left: 1px solid var(--rule); border-top: none; }
+  .flow-arrow { display: none; }
+  .masthead { padding: 20px 24px; }
+}
+
+/* Print */
+@media print {
+  .masthead, .sidebar { display: none; }
+  main { padding: 0; max-width: 100%; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-mark">Trader<span class="dot">·</span>MCP</div>
+  <div class="masthead-meta">用户使用指南 · 第六版</div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="side-label">目录 · Contents</div>
+  <ul class="side-nav">
+    <li><a href="#intro">壹 · 引言</a></li>
+    <li><a href="#workflow">贰 · Trade-as-Git 心法</a></li>
+    <li><a href="#tools">叁 · 工具全览</a>
+      <ul class="side-nav">
+        <li><a href="#tools-read" class="sub">只读工具</a></li>
+        <li><a href="#tools-stage" class="sub">暂存工具</a></li>
+        <li><a href="#tools-push" class="sub">执行工具</a></li>
+        <li><a href="#tools-quant" class="sub">量化分析</a></li>
+        <li><a href="#tools-market" class="sub">市场数据</a></li>
+        <li><a href="#tools-account" class="sub">账户管理</a></li>
+      </ul>
+    </li>
+    <li><a href="#ritual">肆 · 推送仪式</a></li>
+    <li><a href="#examples">伍 · 实战对话</a></li>
+    <li><a href="#quant">陆 · 量化脚本</a></li>
+    <li><a href="#sins">柒 · 八荣八耻</a></li>
+  </ul>
+</aside>
+
+<main>
+
+<div class="hero" id="intro">
+  <div class="hero-eyebrow">Trader MCP · 用户指南 · MMXXVI</div>
+  <h1>交易,如<em>代码</em><br>般严谨</h1>
+  <p class="hero-lede"><span class="drop">T</span>rader MCP 是一套为 AI 代理设计的交易工具集。它将每一笔交易视为一次代码提交——先暂存、再提交、最后推送至券商。这套看似繁复的流程,正是资金安全的最后一道防线。本指南将指引您与 AI 代理协作,安全、透明地执行每一笔交易。</p>
+</div>
+
+<section id="workflow">
+  <h2><span class="ornament">贰</span> · Trade-as-Git 心法</h2>
+
+  <p>每一笔交易都经历四个状态,如同 Git 中的代码变更。理解这套心智模型,是与 AI 代理有效协作的前提。</p>
+
+  <div class="workflow">
+    <div class="workflow-title">Fig. I — 交易状态机</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="num">i.</div>
+        <div class="name">stage_*</div>
+        <div class="desc">将意图写入暂存区。券商对此一无所知。</div>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-step">
+        <div class="num">ii.</div>
+        <div class="name">commit</div>
+        <div class="desc">将暂存操作打包为命名提交,附上决策理由。</div>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-step">
+        <div class="num">iii.</div>
+        <div class="name">pending</div>
+        <div class="desc">等待用户审批。仍可撤销,零副作用。</div>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-step danger">
+        <div class="num">iv.</div>
+        <div class="name">push</div>
+        <div class="desc"><strong>不可逆。</strong>订单发送至券商,资金开始流动。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "暂存与提交是 AI 的自由;推送是人类的权力。"
+    <cite>— Trade-as-Git 设计哲学</cite>
+  </div>
+
+  <p><strong>关键原则:</strong>在推送之前,任何操作都是可逆的,都不会触及真实资金。AI 代理可以在暂存区自由实验、调整策略,直到您明确授权推送。</p>
+</section>
+
+<section id="tools">
+  <h2><span class="ornament">叁</span> · 工具全览</h2>
+
+  <p>Trader MCP 提供 69 个工具,分为六大类。每一类都服务于交易生命周期的特定阶段。</p>
+
+  <h3 id="tools-read">只读工具 · 无需授权</h3>
+  <p>这些工具仅查询状态,不改变任何数据。AI 代理可随时调用,无需您的额外许可。</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>工具</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>listUTAs</code></td><td>列出所有已注册的交易账户</td></tr>
+      <tr><td><code>getAccount</code></td><td>查询账户净值、现金、购买力、盈亏</td></tr>
+      <tr><td><code>getPortfolio</code></td><td>查询持仓,含 FX 标准化百分比</td></tr>
+      <tr><td><code>getOrders</code></td><td>查询待成交订单</td></tr>
+      <tr><td><code>getQuote</code></td><td>获取合约最新报价</td></tr>
+      <tr><td><code>getMarketClock</code></td><td>查询市场开闭状态</td></tr>
+      <tr><td><code>searchContracts</code></td><td>搜索可交易合约</td></tr>
+      <tr><td><code>getContractDetails</code></td><td>获取合约完整规格</td></tr>
+      <tr><td><code>expandContract</code></td><td>展开期权链、期货月份、债券中心</td></tr>
+      <tr><td><code>tradingStatus</code></td><td>查看暂存区状态(如 <code>git status</code>)</td></tr>
+      <tr><td><code>tradingLog</code></td><td>查看交易决策历史(如 <code>git log</code>)</td></tr>
+      <tr><td><code>tradingShow</code></td><td>查看特定提交详情(如 <code>git show</code>)</td></tr>
+      <tr><td><code>orderHistory</code></td><td>订单生命周期历史</td></tr>
+      <tr><td><code>tradeHistory</code></td><td>成交记录(含成交价、数量、金额)</td></tr>
+      <tr><td><code>simulatePriceChange</code></td><td>模拟价格变动对持仓的影响</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="tools-stage">暂存工具 · 本地操作</h3>
+  <p>这些工具仅写入暂存区,不触及券商。每个工具都接受可选的 <code>commitMessage</code> 参数,可在一步内完成暂存并提交。</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>工具</th><th>暂存内容</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>placeOrder</code></td><td>新订单(MKT / LMT / STP / STP LMT / TRAIL / MOC,可选 TP/SL)</td></tr>
+      <tr><td><code>modifyOrder</code></td><td>修改待成交订单(价格/数量/类型/有效期)</td></tr>
+      <tr><td><code>closePosition</code></td><td>平仓(全部或部分)</td></tr>
+      <tr><td><code>cancelOrder</code></td><td>取消待成交订单</td></tr>
+      <tr><td><code>tradingCommit</code></td><td>将暂存区打包为命名提交</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="tools-push">执行工具 · 需要授权</h3>
+
+  <div class="callout danger">
+    <div class="callout-title">⚠ 关键警示</div>
+    <p>以下工具会真实触及券商与资金。<strong>AI 代理必须获得您的明确授权才能调用。</strong></p>
+  </div>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>工具</th><th>效果</th><th>授权规则</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>tradingPush</code></td>
+        <td>将待提交订单发送至券商</td>
+        <td><strong>必须事先获得您的明确同意</strong></td>
+      </tr>
+      <tr>
+        <td><code>tradingReject</code></td>
+        <td>丢弃暂存区与待提交订单</td>
+        <td>当您拒绝时立即使用</td>
+      </tr>
+      <tr>
+        <td><code>tradingSync</code></td>
+        <td>同步券商订单状态</td>
+        <td>自由调用,但建议在推送后延迟 2-5 秒</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="tools-quant">量化分析工具</h3>
+  <p>v2 量化计算器,支持 barId 键控的多数据源技术分析。</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>工具</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>searchBars</code></td><td>查找 K 线数据源,返回 barIds</td></tr>
+      <tr><td><code>calculateQuant</code></td><td>运行技术分析脚本(Python/pandas 子集)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="tools-market">市场数据工具</h3>
+  <p>覆盖股票、加密货币、外汇、商品、ETF、指数、衍生品、经济指标等全资产类别的市场数据查询。</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>类别</th><th>工具数量</th><th>示例</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="category">股票</td><td>5</td><td><code>getEquityQuote</code>, <code>getEquityProfile</code></td></tr>
+      <tr><td class="category">加密货币</td><td>4</td><td><code>getCryptoQuote</code>, <code>getCryptoTickers</code></td></tr>
+      <tr><td class="category">外汇</td><td>3</td><td><code>getCurrencyQuote</code>, <code>getCurrencyPairs</code></td></tr>
+      <tr><td class="category">商品</td><td>3</td><td><code>getCommodityQuote</code></td></tr>
+      <tr><td class="category">ETF</td><td>4</td><td><code>getEtfProfile</code>, <code>getEtfHoldings</code></td></tr>
+      <tr><td class="category">指数</td><td>4</td><td><code>getIndexQuote</code>, <code>getIndexConstituents</code></td></tr>
+      <tr><td class="category">衍生品</td><td>3</td><td><code>getOptionsChain</code>, <code>getFuturesSpecs</code></td></tr>
+      <tr><td class="category">经济指标</td><td>16</td><td><code>getFedRates</code>, <code>getInflation</code>, <code>getGDP</code></td></tr>
+      <tr><td class="category">新闻</td><td>3</td><td><code>globRss</code>, <code>grepRss</code>, <code>readRss</code></td></tr>
+      <tr><td class="category">板块轮动</td><td>2</td><td><code>getSectorPerformance</code></td></tr>
+      <tr><td class="category">参考数据</td><td>3</td><td><code>getMarketHours</code>, <code>getHolidayCalendar</code></td></tr>
+      <tr><td class="category">市场搜索</td><td>2</td><td><code>marketSearch</code>, <code>marketSearchForResearch</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="tools-account">账户管理工具</h3>
+  <p>动态管理交易账户配置(加密存储)。</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>工具</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>addAccount</code></td><td>添加新交易账户</td></tr>
+      <tr><td><code>removeAccount</code></td><td>移除交易账户</td></tr>
+      <tr><td><code>listAccounts</code></td><td>列出所有账户配置</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="ritual">
+  <h2><span class="ornament">肆</span> · 推送仪式</h2>
+
+  <p>当 AI 代理准备执行交易时,必须遵循以下五步仪式。这是您与 AI 之间的契约,缺一不可。</p>
+
+  <ol class="ritual">
+    <li>
+      <strong>带意图暂存</strong>
+      <p>AI 使用高级工具(<code>placeOrder</code>, <code>modifyOrder</code> 等)暂存操作,并传入 <code>commitMessage</code> 说明交易理由。差的理由:"买 AAPL"。好的理由:"入场:AAPL 突破 200 日均线;1% 组合风险;止损 195"。</p>
+    </li>
+    <li>
+      <strong>展示待执行内容</strong>
+      <p>AI 调用 <code>tradingStatus</code>,将结果以表格形式呈现给您。<strong>永远不要</strong>依赖 AI 的记忆——必须以 <code>tradingStatus</code> 返回的实时数据为准。</p>
+    </li>
+    <li>
+      <strong>请求明确授权</strong>
+      <p>AI 使用标准话术请求授权。等待您的回复。<strong>沉默、离题、部分回应都视为未授权。</strong></p>
+    </li>
+    <li>
+      <strong>根据回复分支</strong>
+      <p>
+        · 明确同意("yes", "push", "确认", "推送") → AI 调用 <code>tradingPush</code><br>
+        · 明确拒绝("no", "cancel", "取消") → AI 调用 <code>tradingReject</code><br>
+        · 要求修改("改为 50 股", "限价 150") → AI 不推送,重新暂存后返回步骤 2<br>
+        · 回复模糊 → AI 提出一个澄清问题,不猜测
+      </p>
+    </li>
+    <li>
+      <strong>报告实际结果</strong>
+      <p>推送后,AI 展示提交哈希与券商响应。如有任何 <code>success: false</code> 的操作,必须逐字展示错误,不得掩盖部分失败。</p>
+    </li>
+  </ol>
+
+  <div class="callout warn">
+    <div class="callout-title">⚡ 授权不延续</div>
+    <p>一次"yes"仅授权<strong>刚刚展示的特定提交</strong>。每次新推送都需要新的仪式。即使您在对话早期说过"好的,买 AAPL",AI 也不能在后续对话中以此为由直接推送——必须重新请求。</p>
+  </div>
+</section>
+
+<section id="examples">
+  <h2><span class="ornament">伍</span> · 实战对话</h2>
+
+  <h3>场景一:顺利路径</h3>
+
+  <div class="dialog">
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">在 alpaca-paper 账户买入 10 股 AAPL,限价 175.50。</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已在 <code>alpaca-paper</code> 暂存(提交 <code>a1b2c3d4</code>,"入场:AAPL 回调至 175 支撑;风险定义限价单"):
+        <br><br>
+        <table style="width:100%; font-size:0.9rem; border-collapse:collapse;">
+          <tr style="background:var(--ink); color:var(--cream);">
+            <th style="padding:8px 12px; text-align:left;">#</th>
+            <th style="padding:8px 12px; text-align:left;">操作</th>
+            <th style="padding:8px 12px; text-align:left;">标的</th>
+            <th style="padding:8px 12px; text-align:left;">数量</th>
+            <th style="padding:8px 12px; text-align:left;">类型</th>
+            <th style="padding:8px 12px; text-align:left;">价格</th>
+            <th style="padding:8px 12px; text-align:left;">有效期</th>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;">1</td>
+            <td style="padding:8px 12px;">BUY</td>
+            <td style="padding:8px 12px;">AAPL</td>
+            <td style="padding:8px 12px;">10</td>
+            <td style="padding:8px 12px;">LMT</td>
+            <td style="padding:8px 12px;">175.50</td>
+            <td style="padding:8px 12px;">DAY</td>
+          </tr>
+        </table>
+        <br>
+        预估成本:~$1,755 (USD)。<br>
+        账户购买力:$50,000。市场:开盘中(16:00 ET 收盘)。
+        <br><br>
+        <strong>推送至券商?回复 yes 执行,no 丢弃,或告知修改意见。</strong>
+      </span>
+    </div>
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">yes</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已推送。提交 <code>a1b2c3d4</code> 已生效。
+        <br><br>
+        · BUY 10 AAPL LMT 175.50 → 已提交,orderId <code>xyz-789</code>,状态 <code>accepted</code>。等待成交。
+      </span>
+    </div>
+  </div>
+
+  <h3>场景二:用户拒绝</h3>
+
+  <div class="dialog">
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">不,价差太宽了</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已丢弃。<code>alpaca-paper</code> 的暂存区已清空。未向券商发送任何内容。
+        <br><br>
+        需要我放宽限价、切换为市价单,还是等待更窄的价差?
+      </span>
+    </div>
+  </div>
+
+  <h3>场景三:用户要求修改</h3>
+
+  <div class="dialog">
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">改成 50 股,不是 10 股</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已重新暂存,数量改为 50(提交 <code>e5f6g7h8</code>):
+        <br><br>
+        <table style="width:100%; font-size:0.9rem; border-collapse:collapse;">
+          <tr style="background:var(--ink); color:var(--cream);">
+            <th style="padding:8px 12px; text-align:left;">#</th>
+            <th style="padding:8px 12px; text-align:left;">操作</th>
+            <th style="padding:8px 12px; text-align:left;">标的</th>
+            <th style="padding:8px 12px; text-align:left;">数量</th>
+            <th style="padding:8px 12px; text-align:left;">类型</th>
+            <th style="padding:8px 12px; text-align:left;">价格</th>
+            <th style="padding:8px 12px; text-align:left;">有效期</th>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;">1</td>
+            <td style="padding:8px 12px;">BUY</td>
+            <td style="padding:8px 12px;">AAPL</td>
+            <td style="padding:8px 12px;">50</td>
+            <td style="padding:8px 12px;">LMT</td>
+            <td style="padding:8px 12px;">175.50</td>
+            <td style="padding:8px 12px;">DAY</td>
+          </tr>
+        </table>
+        <br>
+        预估成本:~$8,775。<strong>推送?yes / no / 修改。</strong>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section id="quant">
+  <h2><span class="ornament">陆</span> · 量化脚本</h2>
+
+  <p><code>calculateQuant</code> 工具接受 Python/pandas 子集脚本,对 K 线数据执行技术分析。与 v1 的 <code>calculateIndicator</code> 不同,v2 以 barId 为键,可精确指定数据源(特定券商的 K 线),或在同一脚本中混合多个数据源。</p>
+
+  <h3>基本语法</h3>
+  <p>脚本由一个或多个 <code>name = bars(...)</code> 绑定,后跟最终结果表达式:</p>
+
+  <div class="code-block" data-label="示例">
+<span class="c"># 获取 AAPL 250 日 K 线</span>
+s = <span class="n">bars</span>(<span class="s">"alpaca-paper|AAPL"</span>, <span class="s">"1d"</span>, count=<span class="n">250</span>)
+
+<span class="c"># 计算 50 日与 200 日均线差</span>
+<span class="n">sma</span>(s.close, <span class="n">50</span>) - <span class="n">sma</span>(s.close, <span class="n">200</span>)
+  </div>
+
+  <h3>bars() 参数</h3>
+  <ul>
+    <li><code>barId</code>:数据源标识,格式 <code>{source}|{symbol}</code>。券商 barId 如 <code>"alpaca-paper|AAPL"</code>;数据供应商 barId 如 <code>"yfinance|AAPL"</code></li>
+    <li><code>interval</code>:K 线周期,<code>"1m"</code> <code>"5m"</code> <code>"15m"</code> <code>"30m"</code> <code>"1h"</code> <code>"4h"</code> <code>"1d"</code> <code>"1w"</code></li>
+    <li><code>count=N</code>:最近 N 根 K 线</li>
+    <li><code>asset=</code>:数据供应商 barId 必填,<code>"equity"</code> | <code>"crypto"</code> | <code>"currency"</code> | <code>"commodity"</code></li>
+  </ul>
+
+  <h3>可用函数</h3>
+  <p><strong>趋势/动量:</strong> <code>sma</code>, <code>ema</code>, <code>rsi</code>, <code>bbands</code>, <code>macd</code>, <code>atr</code>, <code>roc</code>, <code>zscore</code>, <code>slope</code></p>
+  <p><strong>成交量:</strong> <code>rvol</code>, <code>obv</code>, <code>mfi</code>, <code>vwap</code></p>
+  <p><strong>统计:</strong> <code>stdev</code>, <code>max</code>, <code>min</code>, <code>sum</code>, <code>average</code>, <code>median</code>, <code>highest</code>, <code>lowest</code>, <code>correlation</code></p>
+
+  <div class="callout note">
+    <div class="callout-title">💡 提示</div>
+    <p>指标函数直接返回最新值(标量),<strong>不要</strong>对其索引。只有原始列是序列,用 <code>s.close[-1]</code>(最新)或 <code>s.close[-n]</code>(倒数第 n)索引。</p>
+  </div>
+
+  <h3>面板 · 批量计算</h3>
+  <p>结果可以是字典 <code>{ "label": expr, ... }</code> 或列表 <code>[ expr, ... ]</code>,最多 50 项。用于多时间框架、多标的、多指标的一次性计算:</p>
+
+  <div class="code-block" data-label="多时间框架">
+h1  = <span class="n">bars</span>(<span class="s">"binance-readonly|BTC/USDT"</span>, <span class="s">"1h"</span>,  count=<span class="n">250</span>)
+h4  = <span class="n">bars</span>(<span class="s">"binance-readonly|BTC/USDT"</span>, <span class="s">"4h"</span>,  count=<span class="n">250</span>)
+h12 = <span class="n">bars</span>(<span class="s">"binance-readonly|BTC/USDT"</span>, <span class="s">"12h"</span>, count=<span class="n">250</span>)
+
+{ <span class="s">"1h"</span>: <span class="n">rsi</span>(h1.close, <span class="n">14</span>), <span class="s">"4h"</span>: <span class="n">rsi</span>(h4.close, <span class="n">14</span>), <span class="s">"12h"</span>: <span class="n">rsi</span>(h12.close, <span class="n">14</span>) }
+  </div>
+
+  <p>返回: <code>{ "1h": 53.2, "4h": 48.9, "12h": 61.4 }</code></p>
+</section>
+
+<section id="sins">
+  <h2><span class="ornament">柒</span> · 八荣八耻</h2>
+
+  <p>以下是 AI 代理在交易场景中必须避免的八种失败模式。这些不是假设——它们都曾在真实场景中发生过。</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>耻</th><th>行为</th><th>正确做法</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>以模糊执行为耻</strong></td>
+        <td>未经明确"yes"就推送</td>
+        <td>暂存、展示、请求——缺一不可</td>
+      </tr>
+      <tr>
+        <td><strong>以瞎猜接口为耻</strong></td>
+        <td>连续调用 <code>tradingPush</code> 和 <code>tradingCommit</code>,事后才请求授权</td>
+        <td>授权在推送<strong>之前</strong>,永远不在之后</td>
+      </tr>
+      <tr>
+        <td><strong>以臆想业务为耻</strong></td>
+        <td>凭记忆描述暂存操作</td>
+        <td>暂存与请求之间必须重新调用 <code>tradingStatus</code></td>
+      </tr>
+      <tr>
+        <td><strong>以跳过验证为耻</strong></td>
+        <td>隐藏券商错误</td>
+        <td>任何 <code>success: false</code> 必须逐字展示</td>
+      </tr>
+      <tr>
+        <td><strong>以创造接口为耻</strong></td>
+        <td>发明工具参数</td>
+        <td>Schema 即契约,不添加未定义字段</td>
+      </tr>
+      <tr>
+        <td><strong>以盲目修改为耻</strong></td>
+        <td>未先 <code>getOrders</code> 确认订单存在就调用 <code>modifyOrder</code></td>
+        <td>先查询,再修改</td>
+      </tr>
+      <tr>
+        <td><strong>以破坏架构为耻</strong></td>
+        <td>将 <code>commitMessage</code> 视为 UI 字符串</td>
+        <td>它是审计日志条目,为未来的自己而写</td>
+      </tr>
+      <tr>
+        <td><strong>以假装理解为耻</strong></td>
+        <td>部分成交就报告"完成"</td>
+        <td>清点成交与拒绝,如实告知</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="colophon">
+  <span class="mark">Trader · MCP · MMXXVI</span>
+  <p>本指南由 Trader MCP 团队编制,旨在帮助用户与 AI 代理安全协作。Trade-as-Git 工作流是资金安全的最后一道防线——请认真对待每一次推送仪式。</p>
+  <p>如需技术支持或反馈,请联系您的系统管理员。本指南不包含安装或部署说明——如需相关文档,请向提供方索取。</p>
+  <p style="margin-top:20px; font-style:italic; color:var(--slate);">「交易如代码般严谨,授权如签署般慎重。」</p>
+</div>
+
+</main>
+
+</div>
+
+</body>
+</html>
