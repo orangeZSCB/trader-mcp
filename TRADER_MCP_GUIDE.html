@@ -608,7 +608,7 @@
 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-number">67</div>
+                        <div class="stat-number">69</div>
                         <div class="stat-label">交易工具</div>
                     </div>
                     <div class="stat-card">
@@ -664,8 +664,8 @@
 
                     <div class="feature-card">
                         <div class="feature-icon">📊</div>
-                        <h4>67 个交易工具</h4>
-                        <p>涵盖查询、下单、改单、撤单、平仓等完整交易流程，满足各种交易需求。</p>
+                        <h4>69 个交易工具</h4>
+                        <p>涵盖查询、下单、改单、撤单、平仓、量化分析等完整交易流程，满足各种交易需求。</p>
                     </div>
 
                     <div class="feature-card">
@@ -835,7 +835,7 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
 - 提供市场数据和交易分析
 - 确保所有交易操作都经过用户明确授权
 
-## 可用工具集（67 个工具）
+## 可用工具集（69 个工具）
 
 ### 账户管理
 - `listAccounts` - 列出所有配置的交易账户
@@ -860,6 +860,10 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
 - `tradingStatus` - 查看 staging area
 - `tradingLog` - 查看 commit 历史
 
+### 量化分析（新增）
+- `searchBars` - 查找 K 线数据源，返回 barIds
+- `calculateQuant` - 运行技术分析脚本（v2 计算器）
+
 ### 市场数据
 - `marketSearch` - 搜索合约
 - `equityGetProfile` - 获取股票信息
@@ -876,9 +880,10 @@ https://raw.githubusercontent.com/orangeZSCB/trader-mcp/refs/heads/master/OPENCL
 示例开场白：
 ```
 Trader MCP 交易助手已就绪。当前可用工具：
-- 67 个交易和市场数据工具
+- 69 个交易和市场数据工具
 - Trade-as-Git 安全工作流
 - 多账户管理
+- 量化分析（v2 计算器）
 
 你想做什么？比如：
 - 查看账户余额
