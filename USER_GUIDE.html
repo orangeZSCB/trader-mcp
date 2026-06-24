@@ -657,9 +657,10 @@ li { margin-bottom: 8px; }
       </ul>
     </li>
     <li><a href="#ritual">肆 · 推送仪式</a></li>
-    <li><a href="#examples">伍 · 实战对话</a></li>
-    <li><a href="#quant">陆 · 量化脚本</a></li>
-    <li><a href="#sins">柒 · 八荣八耻</a></li>
+    <li><a href="#modes">伍 · 执行模式</a></li>
+    <li><a href="#examples">陆 · 实战对话</a></li>
+    <li><a href="#quant">柒 · 量化脚本</a></li>
+    <li><a href="#sins">捌 · 八荣八耻</a></li>
   </ul>
 </aside>
 
@@ -760,11 +761,11 @@ li { margin-bottom: 8px; }
     </tbody>
   </table>
 
-  <h3 id="tools-push">执行工具 · 需要授权</h3>
+  <h3 id="tools-push">执行工具 · 模式相关</h3>
 
   <div class="callout danger">
     <div class="callout-title">⚠ 关键警示</div>
-    <p>以下工具会真实触及券商与资金。<strong>AI 代理必须获得您的明确授权才能调用。</strong></p>
+    <p>以下工具会真实触及券商与资金。根据策略配置,部分操作可能需要您的明确授权,部分可自动执行。</p>
   </div>
 
   <table class="tool-table">
@@ -775,7 +776,7 @@ li { margin-bottom: 8px; }
       <tr>
         <td><code>tradingPush</code></td>
         <td>将待提交订单发送至券商</td>
-        <td><strong>必须事先获得您的明确同意</strong></td>
+        <td><strong>根据策略配置:手动模式需确认,自动模式直接执行</strong></td>
       </tr>
       <tr>
         <td><code>tradingReject</code></td>
@@ -880,8 +881,162 @@ li { margin-bottom: 8px; }
   </div>
 </section>
 
+<section id="modes">
+  <h2><span class="ornament">伍</span> · 执行模式</h2>
+
+  <p>Trader MCP 支持三种执行模式,让您在安全与效率之间找到平衡。通过策略配置文件 <code>$OPENALICE_HOME/data/config/strategy.json</code> 控制。</p>
+
+  <h3>手动模式 (Manual)</h3>
+  <p>默认模式。每次 <code>tradingPush</code> 都需要您的明确确认。最安全,但需要您时刻在线。</p>
+
+  <div class="code-block" data-label="strategy.json">
+{
+  <span class="s">"mode"</span>: <span class="s">"manual"</span>,
+  <span class="s">"rules"</span>: {
+    <span class="s">"newPosition"</span>: { <span class="s">"action"</span>: <span class="s">"confirm"</span> },
+    <span class="s">"modifyOrder"</span>: { <span class="s">"action"</span>: <span class="s">"confirm"</span> },
+    <span class="s">"cancelOrder"</span>: { <span class="s">"action"</span>: <span class="s">"confirm"</span> },
+    <span class="s">"closePosition"</span>: { <span class="s">"action"</span>: <span class="s">"confirm"</span> }
+  }
+}
+  </div>
+
+  <h3>自动模式 (Auto)</h3>
+  <p>所有操作自动执行,无需确认。适合完全信任 AI 的场景,但风险最高。</p>
+
+  <div class="code-block" data-label="strategy.json">
+{
+  <span class="s">"mode"</span>: <span class="s">"auto"</span>,
+  <span class="s">"rules"</span>: {
+    <span class="s">"newPosition"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"modifyOrder"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"cancelOrder"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"closePosition"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> }
+  }
+}
+  </div>
+
+  <h3>混合模式 (Hybrid) — 推荐</h3>
+  <p>根据操作类型智能决策:风控操作(止损/止盈)自动执行,新开仓等需要确认。兼顾安全与效率。</p>
+
+  <div class="code-block" data-label="strategy.json">
+{
+  <span class="s">"mode"</span>: <span class="s">"hybrid"</span>,
+  <span class="s">"rules"</span>: {
+    <span class="c">// 风控操作 — 自动执行,事后通知</span>
+    <span class="s">"stopLoss"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"takeProfit"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"emergencyStop"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push_all"</span> },
+    <span class="s">"modifyOrder"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"cancelOrder"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+
+    <span class="c">// 新开仓 — 需要确认</span>
+    <span class="s">"newPosition"</span>: {
+      <span class="s">"action"</span>: <span class="s">"confirm"</span>,
+      <span class="s">"maxRiskPercent"</span>: <span class="n">2.0</span>,
+      <span class="s">"maxNotionalUsd"</span>: <span class="n">10000</span>
+    },
+    <span class="s">"closePosition"</span>: { <span class="s">"action"</span>: <span class="s">"confirm"</span> }
+  },
+  <span class="s">"notifications"</span>: {
+    <span class="s">"autoPush"</span>: <span class="k">true</span>,
+    <span class="s">"includeCommitHash"</span>: <span class="k">true</span>,
+    <span class="s">"includeBrokerResponse"</span>: <span class="k">true</span>
+  }
+}
+  </div>
+
+  <h3>规则分类</h3>
+  <p>AI 代理会根据操作类型自动分类:</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>类别</th><th>触发条件</th><th>典型动作</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>stopLoss</code></td>
+        <td>订单包含 <code>stopLoss</code> 字段,或价格触及止损位触发平仓</td>
+        <td><code>auto_push</code></td>
+      </tr>
+      <tr>
+        <td><code>takeProfit</code></td>
+        <td>订单包含 <code>takeProfit</code> 字段,或价格触及止盈位触发平仓</td>
+        <td><code>auto_push</code></td>
+      </tr>
+      <tr>
+        <td><code>emergencyStop</code></td>
+        <td>用户明确说"紧急停止"/"全部平仓"</td>
+        <td><code>auto_push_all</code></td>
+      </tr>
+      <tr>
+        <td><code>newPosition</code></td>
+        <td><code>placeOrder</code> 开新仓(该标的无现有持仓)</td>
+        <td><code>confirm</code></td>
+      </tr>
+      <tr>
+        <td><code>modifyOrder</code></td>
+        <td>修改现有订单</td>
+        <td><code>auto_push</code></td>
+      </tr>
+      <tr>
+        <td><code>cancelOrder</code></td>
+        <td>取消现有订单</td>
+        <td><code>auto_push</code></td>
+      </tr>
+      <tr>
+        <td><code>closePosition</code></td>
+        <td>用户主动平仓(非止损/止盈触发)</td>
+        <td><code>confirm</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>自动推送通知</h3>
+  <p>当操作自动执行时,AI 会发送通知告知您:</p>
+
+  <div class="dialog">
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        <strong>[AUTO-PUSH]</strong> 止损触发 — 自动执行保护资金
+        <br><br>
+        已推送至 broker(提交 <code>f1e2d3c4</code>):
+        <br><br>
+        <table style="width:100%; font-size:0.9rem; border-collapse:collapse;">
+          <tr style="background:var(--ink); color:var(--cream);">
+            <th style="padding:8px 12px; text-align:left;">#</th>
+            <th style="padding:8px 12px; text-align:left;">操作</th>
+            <th style="padding:8px 12px; text-align:left;">标的</th>
+            <th style="padding:8px 12px; text-align:left;">数量</th>
+            <th style="padding:8px 12px; text-align:left;">类型</th>
+            <th style="padding:8px 12px; text-align:left;">状态</th>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;">1</td>
+            <td style="padding:8px 12px;">SELL</td>
+            <td style="padding:8px 12px;">AAPL</td>
+            <td style="padding:8px 12px;">100</td>
+            <td style="padding:8px 12px;">MKT</td>
+            <td style="padding:8px 12px;">submitted</td>
+          </tr>
+        </table>
+        <br>
+        Broker 响应:orderId <code>abc-123</code>,状态 <code>accepted</code>。
+        <br><br>
+        持仓已平仓。如需调整止损策略,请告知。
+      </span>
+    </div>
+  </div>
+
+  <div class="callout note">
+    <div class="callout-title">💡 紧急停止</div>
+    <p>当您说"紧急停止"/"全部平仓"时,无论策略配置如何,AI 都会立即平仓所有持仓,无需确认。这是唯一覆盖所有规则的例外。</p>
+  </div>
+</section>
+
 <section id="examples">
-  <h2><span class="ornament">伍</span> · 实战对话</h2>
+  <h2><span class="ornament">陆</span> · 实战对话</h2>
 
   <h3>场景一:顺利路径</h3>
 
@@ -993,7 +1148,7 @@ li { margin-bottom: 8px; }
 </section>
 
 <section id="quant">
-  <h2><span class="ornament">陆</span> · 量化脚本</h2>
+  <h2><span class="ornament">柒</span> · 量化脚本</h2>
 
   <p><code>calculateQuant</code> 工具接受 Python/pandas 子集脚本,对 K 线数据执行技术分析。与 v1 的 <code>calculateIndicator</code> 不同,v2 以 barId 为键,可精确指定数据源(特定券商的 K 线),或在同一脚本中混合多个数据源。</p>
 
@@ -1041,7 +1196,7 @@ h12 = <span class="n">bars</span>(<span class="s">"binance-readonly|BTC/USDT"</s
 </section>
 
 <section id="sins">
-  <h2><span class="ornament">柒</span> · 八荣八耻</h2>
+  <h2><span class="ornament">捌</span> · 八荣八耻</h2>
 
   <p>以下是 AI 代理在交易场景中必须避免的八种失败模式。这些不是假设——它们都曾在真实场景中发生过。</p>
 
