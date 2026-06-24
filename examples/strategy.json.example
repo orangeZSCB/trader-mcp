@@ -1,0 +1,36 @@
+{
+  "mode": "hybrid",
+  "rules": {
+    "stopLoss": {
+      "action": "auto_push",
+      "reason": "止损触发 — 自动执行保护资金"
+    },
+    "takeProfit": {
+      "action": "auto_push",
+      "reason": "止盈触发 — 自动锁定利润"
+    },
+    "emergencyStop": {
+      "action": "auto_push_all",
+      "reason": "紧急停止 — 平仓所有持仓"
+    },
+    "newPosition": {
+      "action": "confirm",
+      "maxRiskPercent": 2.0,
+      "maxNotionalUsd": 10000
+    },
+    "modifyOrder": {
+      "action": "auto_push"
+    },
+    "cancelOrder": {
+      "action": "auto_push"
+    },
+    "closePosition": {
+      "action": "confirm"
+    }
+  },
+  "notifications": {
+    "autoPush": true,
+    "includeCommitHash": true,
+    "includeBrokerResponse": true
+  }
+}
