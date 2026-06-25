@@ -4,14 +4,16 @@
 
 ## 什么是 trader-mcp
 
-trader-mcp 是一个 MCP (Model Context Protocol) 服务器，提供 67 个交易和市场数据工具，让 AI agent 能够：
+trader-mcp 是一个 MCP (Model Context Protocol) 服务器，提供 69 个交易和市场数据工具，让 AI agent 能够：
 - 查询账户、持仓、订单
 - 下单、改单、撤单
 - 执行 Trade-as-Git 工作流（stage → commit → push）
 - 获取实时行情、新闻、经济指标
+- 执行量化分析（v2 计算器）
 - 管理多个交易账户
+- 支持自动交易（止损/止盈自动执行）
 
-**核心理念**：所有交易操作都遵循 Git 工作流，push 到交易所需要用户明确授权。
+**核心理念**：所有交易操作都遵循 Git 工作流，push 到交易所需要用户明确授权（除非配置了自动交易策略）。
 
 ---
 
@@ -32,7 +34,7 @@ trader-mcp 是一个 MCP (Model Context Protocol) 服务器，提供 67 个交�
 - 提供市场数据和交易分析
 - 确保所有交易操作都经过用户明确授权
 
-## 可用工具集（67 个工具）
+## 可用工具集（69 个工具）
 
 ### 账户管理
 - `listAccounts` - 列出所有配置的交易账户
@@ -45,7 +47,7 @@ trader-mcp 是一个 MCP (Model Context Protocol) 服务器，提供 67 个交�
 - `cancelOrder` - 撤单（stage）
 - `closePosition` - 平仓（stage）
 - `tradingCommit` - 提交（commit）
-- `tradingPush` - 推送（push，需要用户授权）
+- `tradingPush` - 推送（push，根据策略配置可能需要用户授权）
 - `tradingReject` - 拒绝（reject）
 
 ### 查询工具
@@ -60,6 +62,10 @@ trader-mcp 是一个 MCP (Model Context Protocol) 服务器，提供 67 个交�
 - `tradingShow` - 查看某个 commit 详情
 - `orderHistory` - 订单历史
 - `tradeHistory` - 成交历史
+
+### 量化分析
+- `searchBars` - 查找 K 线数据源，返回 barIds
+- `calculateQuant` - 运行技术分析脚本（v2 计算器）
 
 ### 市场数据
 - `marketSearch` - 搜索合约
@@ -87,15 +93,18 @@ trader-mcp 是一个 MCP (Model Context Protocol) 服务器，提供 67 个交�
 示例开场白：
 ```
 Trader MCP 交易助手已就绪。当前可用工具：
-- 67 个交易和市场数据工具
+- 69 个交易和市场数据工具
 - Trade-as-Git 安全工作流
 - 多账户管理
+- 量化分析（v2 计算器）
+- 自动交易支持
 
 你想做什么？比如：
 - 查看账户余额
 - 搜索股票信息
 - 下单交易
 - 查看持仓
+- 运行量化分析
 ```
 
 ## 安全准则
@@ -107,8 +116,9 @@ Trader MCP 交易助手已就绪。当前可用工具：
 
 ### 交易安全
 - 所有交易操作都遵循 Trade-as-Git 工作流
-- push 操作必须获得用户明确授权
-- 永远不要在没有用户确认的情况下执行交易
+- push 操作根据策略配置决定是否需要用户授权
+- 自动交易模式下，止损/止盈会自动执行，新开仓仍需确认
+- 永远不要在聊天中暴露 API key
 
 ## 工具可用性
 
@@ -166,6 +176,33 @@ mkdir -p $OPENALICE_HOME/data/config
   }
 }]
 ```
+
+编辑 `$OPENALICE_HOME/data/config/strategy.json`，配置自动交易策略：
+
+```json
+{
+  "mode": "hybrid",
+  "rules": {
+    "stopLoss": { "action": "auto_push" },
+    "takeProfit": { "action": "auto_push" },
+    "emergencyStop": { "action": "auto_push_all" },
+    "newPosition": { "action": "confirm" },
+    "modifyOrder": { "action": "auto_push" },
+    "cancelOrder": { "action": "auto_push" },
+    "closePosition": { "action": "confirm" }
+  },
+  "notifications": {
+    "autoPush": true,
+    "includeCommitHash": true,
+    "includeBrokerResponse": true
+  }
+}
+```
+
+**执行模式说明**：
+- `manual`: 所有操作都需要用户确认
+- `auto`: 所有操作自动执行（不推荐）
+- `hybrid`: 风控操作自动执行，新开仓需要确认（推荐）
 
 **账户类型**：
 - `mock-simulator` - 虚拟盘（测试用）
@@ -285,7 +322,7 @@ openclaw agent --agent main -m "查看 commit abc123 的详情" --local
 
 ## 可用工具列表
 
-trader-mcp 提供 67 个工具：
+trader-mcp 提供 69 个工具：
 
 ### 账户管理（3 个）
 - `listAccounts` - 列出所有配置的交易账户
@@ -298,7 +335,7 @@ trader-mcp 提供 67 个工具：
 - `cancelOrder` - 撤单（stage）
 - `closePosition` - 平仓（stage）
 - `tradingCommit` - 提交（commit）
-- `tradingPush` - 推送（push，需要用户授权）
+- `tradingPush` - 推送（push，根据策略配置可能需要用户授权）
 - `tradingReject` - 拒绝（reject）
 
 ### 查询工具（11 个）
@@ -313,6 +350,10 @@ trader-mcp 提供 67 个工具：
 - `tradingShow` - 查看某个 commit 详情
 - `orderHistory` - 订单历史
 - `tradeHistory` - 成交历史
+
+### 量化分析工具（2 个）
+- `searchBars` - 查找 K 线数据源，返回 barIds
+- `calculateQuant` - 运行技术分析脚本（v2 计算器）
 
 ### 市场数据工具（8 个）
 - `marketSearch` - 搜索合约
