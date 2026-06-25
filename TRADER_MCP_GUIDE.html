@@ -502,17 +502,18 @@ tr:hover td { background: rgba(56, 189, 248, 0.02); }
     <li><a href="#install">2. 安装依赖</a></li>
     <li><a href="#config">3. 配置系统</a></li>
     <li><a href="#accounts">4. 账户配置</a></li>
-    <li><a href="#news">5. 新闻源配置</a></li>
-    <li><a href="#start">6. 启动服务</a></li>
-    <li><a href="#systemd">7. 系统服务</a></li>
+    <li><a href="#strategy">5. 策略配置</a></li>
+    <li><a href="#news">6. 新闻源配置</a></li>
+    <li><a href="#start">7. 启动服务</a></li>
+    <li><a href="#systemd">8. 系统服务</a></li>
   </ul>
   <div class="sidebar-label">OpenClaw 对接</div>
   <ul class="sidebar-nav">
-    <li><a href="#openclaw-install">8. 安装 OpenClaw</a></li>
-    <li><a href="#openclaw-mcp">9. 注册 MCP</a></li>
-    <li><a href="#openclaw-skill">10. 安装 Skill</a></li>
-    <li><a href="#openclaw-identity">11. 身份配置</a></li>
-    <li><a href="#openclaw-verify">12. 验证</a></li>
+    <li><a href="#openclaw-install">9. 安装 OpenClaw</a></li>
+    <li><a href="#openclaw-mcp">10. 注册 MCP</a></li>
+    <li><a href="#openclaw-skill">11. 安装 Skill</a></li>
+    <li><a href="#openclaw-identity">12. 身份配置</a></li>
+    <li><a href="#openclaw-verify">13. 验证</a></li>
   </ul>
   <div class="sidebar-label">参考</div>
   <ul class="sidebar-nav">
@@ -681,8 +682,45 @@ tr:hover td { background: rgba(56, 189, 248, 0.02); }
   <p>也可通过 MCP 工具 <code>addAccount</code> 在运行时动态添加账户。</p>
 </section>
 
+<section id="strategy">
+  <h2><span class="num">05</span>策略配置</h2>
+  <p>编辑 <code>$OPENALICE_HOME/data/config/strategy.json</code> 配置自动交易策略：</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">strategy.json</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>{
+  <span class="s">"mode"</span>: <span class="s">"hybrid"</span>,
+  <span class="s">"rules"</span>: {
+    <span class="c">// 风控操作 — 自动执行</span>
+    <span class="s">"stopLoss"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"takeProfit"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"emergencyStop"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push_all"</span> },
+    <span class="s">"modifyOrder"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+    <span class="s">"cancelOrder"</span>: { <span class="s">"action"</span>: <span class="s">"auto_push"</span> },
+
+    <span class="c">// 新开仓 — 需要确认</span>
+    <span class="s">"newPosition"</span>: { <span class="s">"action"</span>: <span class="s">"confirm"</span> },
+    <span class="s">"closePosition"</span>: { <span class="s">"action"</span>: <span class="s">"confirm"</span> }
+  },
+  <span class="s">"notifications"</span>: {
+    <span class="s">"autoPush"</span>: <span class="k">true</span>,
+    <span class="s">"includeCommitHash"</span>: <span class="k">true</span>,
+    <span class="s">"includeBrokerResponse"</span>: <span class="k">true</span>
+  }
+}</code></pre>
+  </div>
+
+  <div class="alert info">
+    <div class="alert-title">💡 执行模式说明</div>
+    <p><strong>manual</strong>: 所有操作需确认 | <strong>auto</strong>: 全部自动执行 | <strong>hybrid</strong>: 风控自动，开仓需确认（推荐）</p>
+  </div>
+</section>
+
 <section id="news">
-  <h2><span class="num">05</span>新闻源配置</h2>
+  <h2><span class="num">06</span>新闻源配置</h2>
   <p>编辑 <code>$OPENALICE_HOME/data/config/news.json</code> 配置 RSS 新闻收集：</p>
 
   <div class="code-block">
@@ -710,7 +748,7 @@ tr:hover td { background: rgba(56, 189, 248, 0.02); }
 </section>
 
 <section id="start">
-  <h2><span class="num">06</span>启动服务</h2>
+  <h2><span class="num">07</span>启动服务</h2>
 
   <h3>开发模式</h3>
   <div class="code-block">
@@ -744,7 +782,7 @@ tr:hover td { background: rgba(56, 189, 248, 0.02); }
 </section>
 
 <section id="systemd">
-  <h2><span class="num">07</span>系统服务 (systemd)</h2>
+  <h2><span class="num">08</span>系统服务 (systemd)</h2>
 
   <div class="step">
     <div class="step-header">
@@ -786,7 +824,7 @@ WantedBy=multi-user.target</code></pre>
 </section>
 
 <section id="openclaw-install">
-  <h2><span class="num">08</span>安装 OpenClaw</h2>
+  <h2><span class="num">09</span>安装 OpenClaw</h2>
   <p>参考 <a href="https://docs.openclaw.ai/zh-CN/install" style="color:var(--accent)">OpenClaw 官方文档</a> 安装。Linux (Debian) 快速安装：</p>
 
   <div class="code-block">
