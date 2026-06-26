@@ -320,6 +320,59 @@ openclaw agent --agent main -m "查看 commit abc123 的详情" --local
 
 ---
 
+## 自动交易配置
+
+Trader MCP 支持通过 OpenClaw 的 HEARTBEAT 机制实现自动交易监控。你不需要手动配置任何文件,只需要用自然语言告诉 AI 你的策略。
+
+### 配置示例
+
+```bash
+# 告诉 AI 你的监控需求
+openclaw agent --agent main -m "帮我监控 AAPL,止损 170,止盈 185" --local
+
+# AI 会自动:
+# 1. 理解你的策略
+# 2. 生成 ~/.openclaw/HEARTBEAT.md
+# 3. 配置每分钟检查一次
+# 4. 触发时自动执行交易并通知你
+```
+
+### 更多示例
+
+```bash
+# 添加更多监控
+openclaw agent --agent main -m "再加一个 TSLA,止损 240" --local
+
+# 修改检查频率
+openclaw agent --agent main -m "把检查频率改成 5 分钟" --local
+
+# 停止监控
+openclaw agent --agent main -m "停止监控 TSLA" --local
+
+# 查看所有监控规则
+openclaw agent --agent main -m "列出所有监控规则" --local
+```
+
+### 工作原理
+
+1. **用户指令** → AI 理解策略需求
+2. **AI 生成 HEARTBEAT.md** → 写入监控任务
+3. **OpenClaw HEARTBEAT** → 定期触发 AI 执行监控
+4. **AI 检查价格** → 调用 getPortfolio + getQuote
+5. **触发条件** → 自动执行 closePosition + tradingPush
+6. **通知用户** → 告知执行结果
+
+所有自动执行的交易仍然遵循 Trade-as-Git 工作流,commitMessage 会标注 `[AUTO]` 前缀,方便审计。
+
+### 注意事项
+
+- 你不需要手动编辑 HEARTBEAT.md,AI 会自动处理
+- 监控规则存储在 HEARTBEAT.md 中,可以随时通过对话修改
+- 自动执行的交易会记录在 tradingLog 中,可以查看历史
+- 建议在交易时段(09:30-16:00)启用监控,避免非交易时段浪费资源
+
+---
+
 ## 可用工具列表
 
 trader-mcp 提供 69 个工具：

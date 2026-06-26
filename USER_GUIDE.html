@@ -636,7 +636,7 @@ li { margin-bottom: 8px; }
 
 <header class="masthead">
   <div class="masthead-mark">Trader<span class="dot">·</span>MCP</div>
-  <div class="masthead-meta">用户使用指南 · 第六版</div>
+  <div class="masthead-meta">用户使用指南 · 第七版</div>
 </header>
 
 <div class="layout">
@@ -658,9 +658,10 @@ li { margin-bottom: 8px; }
     </li>
     <li><a href="#ritual">肆 · 推送仪式</a></li>
     <li><a href="#modes">伍 · 执行模式</a></li>
-    <li><a href="#examples">陆 · 实战对话</a></li>
-    <li><a href="#quant">柒 · 量化脚本</a></li>
-    <li><a href="#sins">捌 · 八荣八耻</a></li>
+    <li><a href="#auto-trading">陆 · 自动交易</a></li>
+    <li><a href="#examples">柒 · 实战对话</a></li>
+    <li><a href="#quant">捌 · 量化脚本</a></li>
+    <li><a href="#sins">玖 · 八荣八耻</a></li>
   </ul>
 </aside>
 
@@ -1035,8 +1036,115 @@ li { margin-bottom: 8px; }
   </div>
 </section>
 
+<section id="auto-trading">
+  <h2><span class="ornament">陆</span> · 自动交易</h2>
+
+  <p>Trader MCP 支持通过 OpenClaw 的 HEARTBEAT 机制实现自动交易监控。您只需用自然语言告诉 AI 您的策略,AI 会自动配置所有监控——无需手动编辑任何配置文件。</p>
+
+  <h3>配置示例</h3>
+
+  <div class="dialog">
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">帮我监控 AAPL,止损 170,止盈 185</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已配置 AAPL 监控。
+        <br><br>
+        · 止损:170<br>
+        · 止盈:185<br>
+        · 检查频率:每分钟
+        <br><br>
+        触发时会自动平仓并通知您。
+      </span>
+    </div>
+  </div>
+
+  <div class="dialog">
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">再加一个 TSLA,止损 240</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已添加 TSLA 监控,止损 240。现在监控:
+        <br><br>
+        · AAPL: 止损 170, 止盈 185<br>
+        · TSLA: 止损 240
+      </span>
+    </div>
+  </div>
+
+  <div class="dialog">
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">把检查频率改成 5 分钟</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已将监控频率改为每 5 分钟检查一次。
+      </span>
+    </div>
+  </div>
+
+  <div class="dialog">
+    <div class="dialog-line user">
+      <span class="speaker">您</span>
+      <span class="content">停止监控 TSLA</span>
+    </div>
+    <div class="dialog-line agent">
+      <span class="speaker">AI</span>
+      <span class="content">
+        已停止 TSLA 监控。
+      </span>
+    </div>
+  </div>
+
+  <h3>工作原理</h3>
+
+  <p>当您告诉 AI 您的监控需求时,AI 会自动完成以下流程:</p>
+
+  <ol>
+    <li>理解您的策略(标的、条件、动作、频率)</li>
+    <li>在 <code>~/.openclaw/HEARTBEAT.md</code> 中写入监控任务</li>
+    <li>OpenClaw 的 HEARTBEAT 机制定期触发 AI 执行监控</li>
+    <li>AI 调用工具检查价格,触发条件时自动执行交易</li>
+    <li>执行后通知您结果</li>
+  </ol>
+
+  <div class="callout note">
+    <div class="callout-title">💡 提示</div>
+    <p>您不需要手动编辑任何配置文件。AI 会根据您的指令自动完成所有配置。如果您想查看或修改配置,直接告诉 AI 即可。</p>
+  </div>
+
+  <h3>监控逻辑</h3>
+
+  <p>AI 生成的 HEARTBEAT.md 包含以下监控逻辑:</p>
+
+  <div class="code-block" data-label="HEARTBEAT.md(AI 自动生成)">
+tasks:
+- name: trading-monitor
+  interval: 1m
+  prompt: |
+    执行交易监控:
+    1. getPortfolio 获取持仓
+    2. 对每个持仓 getQuote 获取价格
+    3. 检查规则:
+       - AAPL: 止损 170, 止盈 185
+       - TSLA: 止损 240
+    4. 触发时调用 closePosition + tradingPush
+    5. 通知用户
+  </div>
+
+  <p>所有自动执行的交易仍然遵循 Trade-as-Git 工作流,commitMessage 会标注 <code>[AUTO]</code> 前缀,方便审计。</p>
+</section>
+
 <section id="examples">
-  <h2><span class="ornament">陆</span> · 实战对话</h2>
+  <h2><span class="ornament">柒</span> · 实战对话</h2>
 
   <h3>场景一:顺利路径</h3>
 
@@ -1148,7 +1256,7 @@ li { margin-bottom: 8px; }
 </section>
 
 <section id="quant">
-  <h2><span class="ornament">柒</span> · 量化脚本</h2>
+  <h2><span class="ornament">捌</span> · 量化脚本</h2>
 
   <p><code>calculateQuant</code> 工具接受 Python/pandas 子集脚本,对 K 线数据执行技术分析。与 v1 的 <code>calculateIndicator</code> 不同,v2 以 barId 为键,可精确指定数据源(特定券商的 K 线),或在同一脚本中混合多个数据源。</p>
 
@@ -1196,7 +1304,7 @@ h12 = <span class="n">bars</span>(<span class="s">"binance-readonly|BTC/USDT"</s
 </section>
 
 <section id="sins">
-  <h2><span class="ornament">捌</span> · 八荣八耻</h2>
+  <h2><span class="ornament">玖</span> · 八荣八耻</h2>
 
   <p>以下是 AI 代理在交易场景中必须避免的八种失败模式。这些不是假设——它们都曾在真实场景中发生过。</p>
 

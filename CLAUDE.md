@@ -141,6 +141,28 @@ The `extractMcpShape()` and `wrapToolExecute()` bridges handle MCP protocol conv
 - Forwards stdout/stderr with `[uta]` prefix
 - Cascades SIGTERM on shutdown, waits 5s before SIGKILL
 
+### HEARTBEAT Integration
+
+Trader MCP integrates with OpenClaw's HEARTBEAT mechanism for automatic trading monitoring. The AI agent (via SKILL.md instructions) generates `~/.openclaw/HEARTBEAT.md` based on user instructions.
+
+**How it works:**
+1. User tells AI their monitoring needs (e.g., "帮我监控 AAPL,止损 170")
+2. AI reads SKILL.md "自动交易" section for instructions
+3. AI generates/updates `~/.openclaw/HEARTBEAT.md` with monitoring tasks
+4. OpenClaw HEARTBEAT periodically triggers AI to execute monitoring
+5. AI calls Trader MCP tools (getPortfolio, getQuote, closePosition, tradingPush)
+6. When conditions are met, AI auto-executes trades and notifies user
+
+**Key points:**
+- HEARTBEAT is an OpenClaw feature, not Trader MCP
+- Trader MCP only provides tools; OpenClaw handles scheduling
+- AI generates HEARTBEAT.md automatically (no manual configuration)
+- All auto-executed trades follow Trade-as-Git workflow with `[AUTO]` prefix in commitMessage
+- See SKILL.md "自动交易" section for detailed instructions
+
+**Reference:**
+- OpenClaw HEARTBEAT docs: https://docs.openclaw.ai/zh-CN/gateway/heartbeat
+
 ## Configuration
 
 ### Environment Variables

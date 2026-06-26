@@ -8,6 +8,8 @@ trading domain — broker connections, the git-like approval state machine
 service from OpenAlice, lifted out of the Alice + Dashboard runtime and
 rewired around the agent-facing surface only.
 
+**智能自动交易**: 通过 OpenClaw HEARTBEAT 机制实现自动监控和执行。用户只需要用自然语言描述策略(如"帮我监控 AAPL,止损 170"),AI 会自动配置监控并在触发条件时执行交易。支持增量更新规则、调整检查频率、停止监控等操作。
+
 There is no Web UI in this repo. The Trade-as-Git approval gate that the
 OpenAlice Dashboard provides is replaced by a **skill** (`skills/openalice-trading/SKILL.md`)
 that teaches the consuming agent the user-approval ritual: stage and commit
