@@ -523,20 +523,30 @@ Trader MCP 支持通过 OpenClaw 的 HEARTBEAT 机制实现自动交易监控。
 
 生成的文件应该遵循以下格式：
 
-```yaml
-tasks:
-- name: trading-monitor
-  interval: 1m  # 或 5m、15m 等
-  prompt: |
-    执行交易监控：
-    1. getPortfolio 获取持仓
-    2. 对每个持仓 getQuote 获取价格
-    3. 检查规则：
-       - AAPL: 止损 170, 止盈 185
-       - TSLA: 止损 240
-    4. 触发时调用 closePosition + tradingPush
-    5. 通知用户
+```markdown
+# Heartbeat Tasks
+
+## 交易监控
+
+### AAPL 监控
+- 标的: AAPL
+- 止损: $170 (价格 ≤ 170 时触发)
+- 止盈: $185 (价格 ≥ 185 时触发)
+- 检查频率: 每 15 分钟
+- 触发动作: 
+  1. 调用 `getQuote` 获取当前价格
+  2. 如果触发止损或止盈，调用 `closePosition` 平仓
+  3. 调用 `tradingPush` 执行交易
+  4. 通知用户
+
+### TSLA 监控
+- 标的: TSLA
+- 止损: $240 (价格 ≤ 240 时触发)
+- 检查频率: 每 15 分钟
+- 触发动作: 同上
 ```
+
+**重要**：在 HEARTBEAT.md 中必须明确指定使用 Trader MCP 工具（`getQuote`, `closePosition`, `tradingPush`），不要使用 web search 或其他外部工具。
 
 ### 增量更新规则
 
