@@ -489,3 +489,72 @@ see what state things landed in, then ask the user how to proceed.
 For auto-push failures: surface the error immediately, flag it as
 requiring attention, and do NOT retry automatically. The user needs to
 decide whether to retry, modify, or abort.
+
+## 自动交易
+
+Trader MCP 支持通过 OpenClaw 的 HEARTBEAT 机制实现自动交易监控。你不需要手动配置任何文件——AI 会根据用户的自然语言指令自动生成 `~/.openclaw/HEARTBEAT.md`。
+
+### 工作原理
+
+1. **用户指令** → 用户用自然语言描述监控需求（如"帮我监控 AAPL，止损 170"）
+2. **AI 生成 HEARTBEAT.md** → 你自动在 `~/.openclaw/HEARTBEAT.md` 中写入监控任务
+3. **OpenClaw HEARTBEAT** → 定期触发你执行监控
+4. **AI 检查价格** → 调用 `getPortfolio` + `getQuote`
+5. **触发条件** → 自动执行 `closePosition` + `tradingPush`
+6. **通知用户** → 告知执行结果
+
+### 用户指令示例
+
+```
+用户: 帮我监控 AAPL，止损 170，止盈 185
+→ 你应该生成 HEARTBEAT.md，配置每分钟检查一次
+
+用户: 再加一个 TSLA，止损 240
+→ 你应该更新 HEARTBEAT.md，添加 TSLA 监控规则
+
+用户: 把检查频率改成 5 分钟
+→ 你应该更新 HEARTBEAT.md 中的 interval 字段
+
+用户: 停止监控 TSLA
+→ 你应该从 HEARTBEAT.md 中移除 TSLA 监控规则
+```
+
+### HEARTBEAT.md 格式
+
+生成的文件应该遵循以下格式：
+
+```yaml
+tasks:
+- name: trading-monitor
+  interval: 1m  # 或 5m、15m 等
+  prompt: |
+    执行交易监控：
+    1. getPortfolio 获取持仓
+    2. 对每个持仓 getQuote 获取价格
+    3. 检查规则：
+       - AAPL: 止损 170, 止盈 185
+       - TSLA: 止损 240
+    4. 触发时调用 closePosition + tradingPush
+    5. 通知用户
+```
+
+### 增量更新规则
+
+- **添加监控**：读取现有 HEARTBEAT.md（如果存在），在 prompt 中添加新规则
+- **修改频率**：更新 `interval` 字段
+- **移除监控**：从 prompt 中删除对应规则
+- **首次配置**：创建新的 HEARTBEAT.md 文件
+
+### 与 Trade-as-Git 集成
+
+所有自动执行的交易仍然遵循 Trade-as-Git 工作流：
+- `commitMessage` 会标注 `[AUTO]` 前缀（如 `[AUTO] 止损触发: AAPL hit 170`）
+- 自动推送的通知格式与手动推送相同
+- 用户可以通过 `tradingLog` 查看所有自动执行的交易历史
+
+### 注意事项
+
+- 你不需要向用户解释 HEARTBEAT.md 的技术细节
+- 用户只需要用自然语言描述需求，你自动处理所有配置
+- 如果用户询问监控状态，读取 HEARTBEAT.md 并总结当前规则
+- 建议在交易时段（09:30-16:00）启用监控，避免非交易时段浪费资源
